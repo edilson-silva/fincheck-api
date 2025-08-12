@@ -11,7 +11,9 @@ export type UserCreateInput = {
   categories?: UserCreateCategoryInput[];
 };
 
-export type UserCreateOutput = void;
+export type UserCreateOutput = {
+  id: string;
+};
 
 export type UserFindOutput = {
   id: string;

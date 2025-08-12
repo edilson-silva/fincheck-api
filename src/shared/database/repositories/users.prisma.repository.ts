@@ -24,7 +24,9 @@ export class UsersPrismaRepository implements UsersRepository {
       };
     }
 
-    await this.prismaService.user.create({ data: createUserData });
+    const user = await this.prismaService.user.create({ data: createUserData });
+
+    return { id: user.id };
   }
 
   async findByEmail(email: string): Promise<UserFindOutput | null> {
