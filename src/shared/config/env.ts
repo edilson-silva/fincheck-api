@@ -2,16 +2,16 @@ import 'dotenv/config';
 
 import { InternalServerErrorException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { IsNotEmpty, IsString, validateSync } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, validateSync } from 'class-validator';
 
 class Env {
   @IsString()
   @IsNotEmpty()
   DATABASE_URL: string;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  PASSWORD_HASH_SALT: string;
+  PASSWORD_HASH_SALT: number;
 
   @IsString()
   @IsNotEmpty()
