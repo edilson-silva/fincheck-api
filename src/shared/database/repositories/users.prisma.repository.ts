@@ -4,6 +4,7 @@ import {
   UserCreateInput,
   UserCreateOutput,
   UserFindOutput,
+  UserGetByIdOutput,
   UsersRepository,
 } from './users.repository';
 
@@ -27,6 +28,18 @@ export class UsersPrismaRepository implements UsersRepository {
     const user = await this.prismaService.user.create({ data: createUserData });
 
     return { id: user.id };
+  }
+
+  async findById(id: string): Promise<UserGetByIdOutput> {
+    const user = await this.prismaService.user.findFirst({
+      where: { id },
+      select: {
+        name: true,
+        email: true,
+      },
+    });
+
+    return user;
   }
 
   async findByEmail(email: string): Promise<UserFindOutput | null> {

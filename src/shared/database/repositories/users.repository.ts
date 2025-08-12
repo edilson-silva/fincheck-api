@@ -22,7 +22,13 @@ export type UserFindOutput = {
   password: string;
 };
 
+export type UserGetByIdOutput = {
+  name: string;
+  email: string;
+};
+
 export abstract class UsersRepository {
   abstract create(userCreateDto: UserCreateInput): Promise<UserCreateOutput>;
+  abstract findById(id: string): Promise<UserGetByIdOutput | null>;
   abstract findByEmail(email: string): Promise<UserFindOutput | null>;
 }

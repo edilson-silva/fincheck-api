@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { UserCreateInputDto } from './user-create.dto';
+// import { PartialType } from '@nestjs/mapped-types';
+// import { UserCreateInputDto } from './user-get-by-id.dto';
 
-export class UserUpdateDto extends PartialType(UserCreateInputDto) {}
+// export class UserUpdateDto extends PartialType(UserCreateInputDto) {}
