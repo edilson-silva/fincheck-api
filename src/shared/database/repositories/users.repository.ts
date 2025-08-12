@@ -14,6 +14,7 @@ export type UserCreateInput = {
 export type UserCreateOutput = void;
 
 export type UserFindOutput = {
+  id: string;
   name: string;
   email: string;
   password: string;
