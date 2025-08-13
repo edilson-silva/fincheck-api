@@ -1,6 +1,6 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { Request } from 'express';
+import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
 import { UserGetByIdOutputDto } from './dtos/user-get-by-id.dto';
 import { UsersService } from './users.service';
 
@@ -10,8 +10,7 @@ export class UsersController {
 
   @Get('me')
   @UseGuards(JwtModule)
-  me(@Req() request: Request): Promise<UserGetByIdOutputDto> {
-    const userId = request.userId;
+  me(@ActiveUserId() userId: string): Promise<UserGetByIdOutputDto> {
     return this.usersService.getUserById(userId);
   }
 }
