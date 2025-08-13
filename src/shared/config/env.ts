@@ -1,5 +1,3 @@
-import 'dotenv/config';
-
 import { InternalServerErrorException } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { IsNotEmpty, IsNumber, IsString, validateSync } from 'class-validator';
