@@ -10,7 +10,7 @@ import {
 import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
 import { BankAccountsService } from './bank-accounts.service';
 import { BankAccountCreateInputDto } from './dto/bank-account-create.dto';
-import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
+import { UpdateBankAccountInputDto } from './dto/bank-account-update.dto';
 
 @Controller('bank-accounts')
 export class BankAccountsController {
@@ -29,12 +29,17 @@ export class BankAccountsController {
     return this.bankAccountsService.list(userId);
   }
 
-  @Put(':id')
+  @Put(':bankAccountId')
   update(
-    @Param('id') id: string,
-    @Body() updateBankAccountDto: UpdateBankAccountDto,
+    @ActiveUserId() userId: string,
+    @Param('bankAccountId') bankAccountId: string,
+    @Body() updateBankAccountDto: UpdateBankAccountInputDto,
   ) {
-    return this.bankAccountsService.update(+id, updateBankAccountDto);
+    return this.bankAccountsService.update(
+      userId,
+      bankAccountId,
+      updateBankAccountDto,
+    );
   }
 
   @Delete(':id')
