@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
@@ -14,6 +16,7 @@ import {
   BankAccountCreateInputDto,
   BankAccountCreateOutputDto,
 } from './dto/bank-account-create.dto';
+import { BankAccountDeleteOutputDto } from './dto/bank-account-delete.dto';
 import { BankAccountListOutputDto } from './dto/bank-account-list.dto';
 import {
   BankAccountUpdateInputDto,
@@ -50,8 +53,12 @@ export class BankAccountsController {
     );
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bankAccountsService.remove(+id);
+  @Delete(':bankAccountId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(
+    @ActiveUserId() userId: string,
+    @Param('bankAccountId', ParseUUIDPipe) bankAccountId: string,
+  ): Promise<BankAccountDeleteOutputDto> {
+    return this.bankAccountsService.delete(userId, bankAccountId);
   }
 }

@@ -25,6 +25,8 @@ export type BankAccountUpdateOutput = BankAccountCreateOutput;
 
 export type BankAccountFindOutput = BankAccount;
 
+export type BankAccountDeleteOutput = void;
+
 export abstract class BankAccountsRepository {
   abstract create(
     userId: string,
@@ -43,4 +45,9 @@ export abstract class BankAccountsRepository {
     userId: string,
     bankAccountId: string,
   ): Promise<BankAccountFindOutput>;
+
+  abstract delete(
+    userId: string,
+    bankAccountId: string,
+  ): Promise<BankAccountDeleteOutput>;
 }

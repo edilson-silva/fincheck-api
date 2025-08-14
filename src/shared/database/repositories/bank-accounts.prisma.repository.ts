@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma.service';
 import {
   BankAccountCreateInput,
   BankAccountCreateOutput,
+  BankAccountDeleteOutput,
   BankAccountFindOutput,
   BankAccountListOutput,
   BankAccountsRepository,
@@ -29,6 +30,20 @@ export class BankAccountsPrismaRepository implements BankAccountsRepository {
         type,
       },
     });
+  }
+
+  async find(
+    userId: string,
+    bankAccountId: string,
+  ): Promise<BankAccountFindOutput> {
+    const bankAccount = await this.prismaService.bankAccount.findFirst({
+      where: {
+        userId,
+        id: bankAccountId,
+      },
+    });
+
+    return bankAccount;
   }
 
   async list(userId: string): Promise<BankAccountListOutput> {
@@ -60,17 +75,15 @@ export class BankAccountsPrismaRepository implements BankAccountsRepository {
     });
   }
 
-  async find(
+  async delete(
     userId: string,
     bankAccountId: string,
-  ): Promise<BankAccountFindOutput> {
-    const bankAccount = await this.prismaService.bankAccount.findFirst({
+  ): Promise<BankAccountDeleteOutput> {
+    await this.prismaService.bankAccount.delete({
       where: {
         userId,
         id: bankAccountId,
       },
     });
-
-    return bankAccount;
   }
 }

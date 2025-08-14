@@ -4,6 +4,7 @@ import {
   BankAccountCreateInputDto,
   BankAccountCreateOutputDto,
 } from './dto/bank-account-create.dto';
+import { BankAccountDeleteOutputDto } from './dto/bank-account-delete.dto';
 import { BankAccountListOutputDto } from './dto/bank-account-list.dto';
 import {
   BankAccountUpdateInputDto,
@@ -55,7 +56,17 @@ export class BankAccountsService {
     return updatedBankAccount;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} bankAccount`;
+  async delete(
+    userId: string,
+    bankAccountId: string,
+  ): Promise<BankAccountDeleteOutputDto> {
+    const bankAccount = await this.bankAccountsRepository.find(
+      userId,
+      bankAccountId,
+    );
+
+    if (!bankAccount) throw new NotFoundException('Bank account not found');
+
+    return await this.bankAccountsRepository.delete(userId, bankAccountId);
   }
 }
