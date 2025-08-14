@@ -10,12 +10,27 @@ import {
   BankAccountUpdateInputDto,
   BankAccountUpdateOutputDto,
 } from './dto/bank-account-update.dto';
+import { BankAccountDto } from './dto/bank-account.dto';
 
 @Injectable()
 export class BankAccountsService {
   constructor(
     private readonly bankAccountsRepository: BankAccountsRepository,
   ) {}
+
+  private async validateBankAccountOwnership(
+    userId: string,
+    bankAccountId: string,
+  ): Promise<BankAccountDto> {
+    const bankAccount = await this.bankAccountsRepository.find(
+      userId,
+      bankAccountId,
+    );
+
+    if (!bankAccount) throw new NotFoundException('Bank account not found');
+
+    return bankAccount;
+  }
 
   async create(
     userId: string,
@@ -40,12 +55,7 @@ export class BankAccountsService {
     bankAccountId: string,
     updateBankAccountInputDto: BankAccountUpdateInputDto,
   ): Promise<BankAccountUpdateOutputDto> {
-    const bankAccount = await this.bankAccountsRepository.find(
-      userId,
-      bankAccountId,
-    );
-
-    if (!bankAccount) throw new NotFoundException('Bank account not found');
+    await this.validateBankAccountOwnership(userId, bankAccountId);
 
     const updatedBankAccount = await this.bankAccountsRepository.update(
       userId,
@@ -60,12 +70,7 @@ export class BankAccountsService {
     userId: string,
     bankAccountId: string,
   ): Promise<BankAccountDeleteOutputDto> {
-    const bankAccount = await this.bankAccountsRepository.find(
-      userId,
-      bankAccountId,
-    );
-
-    if (!bankAccount) throw new NotFoundException('Bank account not found');
+    await this.validateBankAccountOwnership(userId, bankAccountId);
 
     return await this.bankAccountsRepository.delete(userId, bankAccountId);
   }
