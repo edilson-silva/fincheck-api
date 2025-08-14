@@ -1,36 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { BankAccountsRepository } from 'src/shared/database/repositories/bank-accounts.repository';
 import {
   BankAccountCreateInputDto,
   BankAccountCreateOutputDto,
-} from './dto/bank-account-create.dto';
-import { BankAccountDeleteOutputDto } from './dto/bank-account-delete.dto';
-import { BankAccountListOutputDto } from './dto/bank-account-list.dto';
+} from '../dto/bank-account-create.dto';
+import { BankAccountDeleteOutputDto } from '../dto/bank-account-delete.dto';
+import { BankAccountListOutputDto } from '../dto/bank-account-list.dto';
 import {
   BankAccountUpdateInputDto,
   BankAccountUpdateOutputDto,
-} from './dto/bank-account-update.dto';
-import { BankAccountDto } from './dto/bank-account.dto';
+} from '../dto/bank-account-update.dto';
+import { BankAccountsOwnershipValidateService } from './bank-accounts-ownership-validate.service';
 
 @Injectable()
 export class BankAccountsService {
   constructor(
     private readonly bankAccountsRepository: BankAccountsRepository,
+    private readonly bankAccountsOwnershipValidateService: BankAccountsOwnershipValidateService,
   ) {}
-
-  private async validateBankAccountOwnership(
-    userId: string,
-    bankAccountId: string,
-  ): Promise<BankAccountDto> {
-    const bankAccount = await this.bankAccountsRepository.find(
-      userId,
-      bankAccountId,
-    );
-
-    if (!bankAccount) throw new NotFoundException('Bank account not found');
-
-    return bankAccount;
-  }
 
   async create(
     userId: string,
@@ -55,7 +42,10 @@ export class BankAccountsService {
     bankAccountId: string,
     updateBankAccountInputDto: BankAccountUpdateInputDto,
   ): Promise<BankAccountUpdateOutputDto> {
-    await this.validateBankAccountOwnership(userId, bankAccountId);
+    await this.bankAccountsOwnershipValidateService.validate(
+      userId,
+      bankAccountId,
+    );
 
     const updatedBankAccount = await this.bankAccountsRepository.update(
       userId,
@@ -70,7 +60,10 @@ export class BankAccountsService {
     userId: string,
     bankAccountId: string,
   ): Promise<BankAccountDeleteOutputDto> {
-    await this.validateBankAccountOwnership(userId, bankAccountId);
+    await this.bankAccountsOwnershipValidateService.validate(
+      userId,
+      bankAccountId,
+    );
 
     return await this.bankAccountsRepository.delete(userId, bankAccountId);
   }
