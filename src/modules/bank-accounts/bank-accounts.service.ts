@@ -4,6 +4,7 @@ import {
   BankAccountCreateInputDto,
   BankAccountCreateOutputDto,
 } from './dto/bank-account-create.dto';
+import { BankAccountListOutputDto } from './dto/bank-account-list.dto';
 import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
 
 @Injectable()
@@ -12,15 +13,22 @@ export class BankAccountsService {
     private readonly bankAccountsRepository: BankAccountsRepository,
   ) {}
 
-  create(
+  async create(
     userId: string,
     createBankAccountDto: BankAccountCreateInputDto,
   ): Promise<BankAccountCreateOutputDto> {
-    return this.bankAccountsRepository.create(userId, createBankAccountDto);
+    const bankAccount = await this.bankAccountsRepository.create(
+      userId,
+      createBankAccountDto,
+    );
+
+    return bankAccount;
   }
 
-  findAll() {
-    return `This action returns all bankAccounts`;
+  async list(userId: string): Promise<BankAccountListOutputDto> {
+    const bankAccounts = await this.bankAccountsRepository.list(userId);
+
+    return { bankAccounts };
   }
 
   findOne(id: number) {

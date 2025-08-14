@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma.service';
 import {
   BankAccountCreateInput,
   BankAccountCreateOutput,
+  BankAccountListOutput,
   BankAccountsRepository,
 } from './bank-accounts.repository';
 
@@ -25,5 +26,13 @@ export class BankAccountsPrismaRepository implements BankAccountsRepository {
         type,
       },
     });
+  }
+
+  async list(userId: string): Promise<BankAccountListOutput> {
+    const bankAccounts = await this.prismaService.bankAccount.findMany({
+      where: { userId },
+    });
+
+    return bankAccounts;
   }
 }
