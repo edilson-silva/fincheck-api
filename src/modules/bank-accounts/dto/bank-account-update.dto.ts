@@ -3,6 +3,6 @@ import {
   BankAccountCreateOutputDto,
 } from './bank-account-create.dto';
 
-export class UpdateBankAccountInputDto extends BankAccountCreateInputDto {}
+export class BankAccountUpdateInputDto extends BankAccountCreateInputDto {}
 
-export type UpdateBankAccountOutputDto = BankAccountCreateOutputDto;
+export type BankAccountUpdateOutputDto = BankAccountCreateOutputDto;

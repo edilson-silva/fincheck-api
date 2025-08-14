@@ -5,7 +5,10 @@ import {
   BankAccountCreateOutputDto,
 } from './dto/bank-account-create.dto';
 import { BankAccountListOutputDto } from './dto/bank-account-list.dto';
-import { UpdateBankAccountInputDto } from './dto/bank-account-update.dto';
+import {
+  BankAccountUpdateInputDto,
+  BankAccountUpdateOutputDto,
+} from './dto/bank-account-update.dto';
 
 @Injectable()
 export class BankAccountsService {
@@ -34,8 +37,8 @@ export class BankAccountsService {
   async update(
     userId: string,
     bankAccountId: string,
-    updateBankAccountInputDto: UpdateBankAccountInputDto,
-  ) {
+    updateBankAccountInputDto: BankAccountUpdateInputDto,
+  ): Promise<BankAccountUpdateOutputDto> {
     const bankAccount = await this.bankAccountsRepository.find(
       userId,
       bankAccountId,

@@ -4,13 +4,21 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
 import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
 import { BankAccountsService } from './bank-accounts.service';
-import { BankAccountCreateInputDto } from './dto/bank-account-create.dto';
-import { UpdateBankAccountInputDto } from './dto/bank-account-update.dto';
+import {
+  BankAccountCreateInputDto,
+  BankAccountCreateOutputDto,
+} from './dto/bank-account-create.dto';
+import { BankAccountListOutputDto } from './dto/bank-account-list.dto';
+import {
+  BankAccountUpdateInputDto,
+  BankAccountUpdateOutputDto,
+} from './dto/bank-account-update.dto';
 
 @Controller('bank-accounts')
 export class BankAccountsController {
@@ -20,21 +28,21 @@ export class BankAccountsController {
   create(
     @ActiveUserId() userId: string,
     @Body() createBankAccountDto: BankAccountCreateInputDto,
-  ) {
+  ): Promise<BankAccountCreateOutputDto> {
     return this.bankAccountsService.create(userId, createBankAccountDto);
   }
 
   @Get()
-  findAll(@ActiveUserId() userId: string) {
+  findAll(@ActiveUserId() userId: string): Promise<BankAccountListOutputDto> {
     return this.bankAccountsService.list(userId);
   }
 
   @Put(':bankAccountId')
   update(
     @ActiveUserId() userId: string,
-    @Param('bankAccountId') bankAccountId: string,
-    @Body() updateBankAccountDto: UpdateBankAccountInputDto,
-  ) {
+    @Param('bankAccountId', ParseUUIDPipe) bankAccountId: string,
+    @Body() updateBankAccountDto: BankAccountUpdateInputDto,
+  ): Promise<BankAccountUpdateOutputDto> {
     return this.bankAccountsService.update(
       userId,
       bankAccountId,
