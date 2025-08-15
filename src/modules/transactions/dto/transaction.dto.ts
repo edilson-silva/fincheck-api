@@ -2,8 +2,7 @@ export type TransactionDto = {
   id: string;
   userId: string;
   bankAccountId: string;
-  categoryId?: string;
-  initialBalance: number;
+  categoryId: string;
   name: string;
   value: number;
   date: Date;
