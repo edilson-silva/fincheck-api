@@ -1,4 +1,4 @@
-import { BankAccountType } from 'src/modules/bank-accounts/entities/bank-account';
+import { BankAccountType } from 'src/modules/bank-accounts/entities/bank-account-type.entity';
 
 export type BankAccount = {
   id: string;

@@ -30,13 +30,13 @@ export class BankAccountsController {
   @Post()
   create(
     @ActiveUserId() userId: string,
-    @Body() createBankAccountDto: BankAccountCreateInputDto,
+    @Body() bankAccountCreateInputDto: BankAccountCreateInputDto,
   ): Promise<BankAccountCreateOutputDto> {
-    return this.bankAccountsService.create(userId, createBankAccountDto);
+    return this.bankAccountsService.create(userId, bankAccountCreateInputDto);
   }
 
   @Get()
-  findAll(@ActiveUserId() userId: string): Promise<BankAccountListOutputDto> {
+  list(@ActiveUserId() userId: string): Promise<BankAccountListOutputDto> {
     return this.bankAccountsService.list(userId);
   }
 
@@ -44,12 +44,12 @@ export class BankAccountsController {
   update(
     @ActiveUserId() userId: string,
     @Param('bankAccountId', ParseUUIDPipe) bankAccountId: string,
-    @Body() updateBankAccountDto: BankAccountUpdateInputDto,
+    @Body() bankAccountUpdateInputDto: BankAccountUpdateInputDto,
   ): Promise<BankAccountUpdateOutputDto> {
     return this.bankAccountsService.update(
       userId,
       bankAccountId,
-      updateBankAccountDto,
+      bankAccountUpdateInputDto,
     );
   }
 

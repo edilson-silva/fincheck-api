@@ -6,7 +6,7 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-import { BankAccountType } from '../entities/bank-account';
+import { BankAccountType } from '../entities/bank-account-type.entity';
 
 export class BankAccountCreateInputDto {
   @IsString()

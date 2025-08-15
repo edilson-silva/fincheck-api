@@ -21,11 +21,11 @@ export class BankAccountsService {
 
   async create(
     userId: string,
-    createBankAccountDto: BankAccountCreateInputDto,
+    bankAccountCreateInputDto: BankAccountCreateInputDto,
   ): Promise<BankAccountCreateOutputDto> {
     const bankAccount = await this.bankAccountsRepository.create(
       userId,
-      createBankAccountDto,
+      bankAccountCreateInputDto,
     );
 
     return bankAccount;
@@ -40,7 +40,7 @@ export class BankAccountsService {
   async update(
     userId: string,
     bankAccountId: string,
-    updateBankAccountInputDto: BankAccountUpdateInputDto,
+    bankAccountUpdateInputDto: BankAccountUpdateInputDto,
   ): Promise<BankAccountUpdateOutputDto> {
     await this.bankAccountsOwnershipValidateService.validate(
       userId,
@@ -50,7 +50,7 @@ export class BankAccountsService {
     const updatedBankAccount = await this.bankAccountsRepository.update(
       userId,
       bankAccountId,
-      updateBankAccountInputDto,
+      bankAccountUpdateInputDto,
     );
 
     return updatedBankAccount;
