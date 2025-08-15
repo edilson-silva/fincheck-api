@@ -4,6 +4,8 @@ import { BankAccountsPrismaRepository } from './repositories/bank-accounts.prism
 import { BankAccountsRepository } from './repositories/bank-accounts.repository';
 import { CategoriesPrismaRepository } from './repositories/categories.prisma.repository';
 import { CategoriesRepository } from './repositories/categories.repository';
+import { TransactionPrismaRepository } from './repositories/transactions.prisma.repository';
+import { TransactionsRepository } from './repositories/transactions.repository';
 import { UsersPrismaRepository } from './repositories/users.prisma.repository';
 import { UsersRepository } from './repositories/users.repository';
 
@@ -23,7 +25,16 @@ import { UsersRepository } from './repositories/users.repository';
       provide: BankAccountsRepository,
       useClass: BankAccountsPrismaRepository,
     },
+    {
+      provide: TransactionsRepository,
+      useClass: TransactionPrismaRepository,
+    },
   ],
-  exports: [UsersRepository, CategoriesRepository, BankAccountsRepository],
+  exports: [
+    UsersRepository,
+    CategoriesRepository,
+    BankAccountsRepository,
+    TransactionsRepository,
+  ],
 })
 export class DatabaseModule {}
