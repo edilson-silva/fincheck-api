@@ -48,7 +48,6 @@ export class BankAccountsService {
     );
 
     const updatedBankAccount = await this.bankAccountsRepository.update(
-      userId,
       bankAccountId,
       bankAccountUpdateInputDto,
     );
@@ -65,6 +64,6 @@ export class BankAccountsService {
       bankAccountId,
     );
 
-    return await this.bankAccountsRepository.delete(userId, bankAccountId);
+    return await this.bankAccountsRepository.delete(bankAccountId);
   }
 }

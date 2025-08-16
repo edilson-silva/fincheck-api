@@ -55,7 +55,6 @@ export class BankAccountsPrismaRepository implements BankAccountsRepository {
   }
 
   async update(
-    userId: string,
     bankAccountId: string,
     bankAccountUpdateInput: BankAccountUpdateInput,
   ): Promise<BankAccountUpdateOutput> {
@@ -66,7 +65,6 @@ export class BankAccountsPrismaRepository implements BankAccountsRepository {
         id: bankAccountId,
       },
       data: {
-        userId,
         name,
         initialBalance,
         color,
@@ -75,13 +73,9 @@ export class BankAccountsPrismaRepository implements BankAccountsRepository {
     });
   }
 
-  async delete(
-    userId: string,
-    bankAccountId: string,
-  ): Promise<BankAccountDeleteOutput> {
+  async delete(bankAccountId: string): Promise<BankAccountDeleteOutput> {
     await this.prismaService.bankAccount.delete({
       where: {
-        userId,
         id: bankAccountId,
       },
     });

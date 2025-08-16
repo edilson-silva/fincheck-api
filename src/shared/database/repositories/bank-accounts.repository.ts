@@ -15,15 +15,14 @@ export type BankAccountCreateInput = {
   type: BankAccountType;
   color: string;
 };
-
 export type BankAccountCreateOutput = void;
+
+export type BankAccountFindOutput = BankAccount;
 
 export type BankAccountListOutput = BankAccount[];
 
 export type BankAccountUpdateInput = BankAccountCreateInput;
 export type BankAccountUpdateOutput = BankAccountCreateOutput;
-
-export type BankAccountFindOutput = BankAccount;
 
 export type BankAccountDeleteOutput = void;
 
@@ -33,21 +32,17 @@ export abstract class BankAccountsRepository {
     bankAccountCreateInput: BankAccountCreateInput,
   ): Promise<BankAccountCreateOutput>;
 
-  abstract list(userId: string): Promise<BankAccountListOutput>;
-
-  abstract update(
-    userId: string,
-    bankAccountId: string,
-    bankAccountUpdateInput: BankAccountUpdateInput,
-  ): Promise<BankAccountUpdateOutput>;
-
   abstract find(
     userId: string,
     bankAccountId: string,
   ): Promise<BankAccountFindOutput>;
 
-  abstract delete(
-    userId: string,
+  abstract list(userId: string): Promise<BankAccountListOutput>;
+
+  abstract update(
     bankAccountId: string,
-  ): Promise<BankAccountDeleteOutput>;
+    bankAccountUpdateInput: BankAccountUpdateInput,
+  ): Promise<BankAccountUpdateOutput>;
+
+  abstract delete(bankAccountId: string): Promise<BankAccountDeleteOutput>;
 }
