@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TransactionsRepository } from 'src/shared/database/repositories/transactions.repository';
 import { BankAccountsOwnershipValidateService } from '../bank-accounts/services/bank-accounts-ownership-validate.service';
+import { CategoriesOwnershipValidateService } from '../categories/services/categories-ownership-validate.service';
 import {
   TransactionCreateInputDto,
   TransactionCreateOutputDto,
@@ -12,17 +13,27 @@ export class TransactionsService {
   constructor(
     private readonly transactionsRepository: TransactionsRepository,
     private readonly bankAccountsOwnershipValidateService: BankAccountsOwnershipValidateService,
+    private readonly categoriesOwnershipValidateService: CategoriesOwnershipValidateService,
   ) {}
+
+  private async validateEntitiesOwnership(
+    userId: string,
+    bankAccountId: string,
+    categoryId: string,
+  ): Promise<void> {
+    await Promise.all([
+      this.bankAccountsOwnershipValidateService.validate(userId, bankAccountId),
+      this.categoriesOwnershipValidateService.validate(userId, categoryId),
+    ]);
+  }
 
   async create(
     userId: string,
     transactionCreateInputDto: TransactionCreateInputDto,
   ): Promise<TransactionCreateOutputDto> {
-    const { bankAccountId } = transactionCreateInputDto;
-    await this.bankAccountsOwnershipValidateService.validate(
-      userId,
-      bankAccountId,
-    );
+    const { bankAccountId, categoryId } = transactionCreateInputDto;
+
+    await this.validateEntitiesOwnership(userId, bankAccountId, categoryId);
 
     return await this.transactionsRepository.create(
       userId,
