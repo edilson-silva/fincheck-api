@@ -21,12 +21,12 @@ export type TransactionCreateInput = {
 };
 export type TransactionCreateOutput = void;
 
-export type TransactionUpdateInput = TransactionCreateInput;
-export type TransactionUpdateOutput = TransactionCreateOutput;
+export type TransactionFindOutput = Transaction;
 
 export type TransactionListOutput = Transaction[];
 
-export type TransactionFindOutput = Transaction;
+export type TransactionUpdateInput = TransactionCreateInput;
+export type TransactionUpdateOutput = TransactionCreateOutput;
 
 export type TransactionDeleteOutput = void;
 
@@ -36,21 +36,17 @@ export abstract class TransactionsRepository {
     transactionCreateInput: TransactionCreateInput,
   ): Promise<TransactionCreateOutput>;
 
-  abstract update(
-    userId: string,
-    transactionId: string,
-    transactionUpdateInput: TransactionUpdateInput,
-  ): Promise<TransactionUpdateOutput>;
-
-  abstract list(userId: string): Promise<TransactionListOutput>;
-
   abstract find(
     userId: string,
     transactionId: string,
   ): Promise<TransactionFindOutput>;
 
-  abstract delete(
-    userId: string,
+  abstract list(userId: string): Promise<TransactionListOutput>;
+
+  abstract update(
     transactionId: string,
-  ): Promise<TransactionDeleteOutput>;
+    transactionUpdateInput: TransactionUpdateInput,
+  ): Promise<TransactionUpdateOutput>;
+
+  abstract delete(transactionId: string): Promise<TransactionDeleteOutput>;
 }

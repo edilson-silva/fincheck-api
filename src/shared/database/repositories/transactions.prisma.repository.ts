@@ -14,6 +14,7 @@ import {
 @Injectable()
 export class TransactionPrismaRepository implements TransactionsRepository {
   constructor(private readonly prismaService: PrismaService) {}
+
   async create(
     userId: string,
     transactionCreateInputDto: TransactionCreateInput,
@@ -34,38 +35,6 @@ export class TransactionPrismaRepository implements TransactionsRepository {
     });
   }
 
-  async update(
-    userId: string,
-    transactionId: string,
-    transactionUpdateInput: TransactionUpdateInput,
-  ): Promise<TransactionUpdateOutput> {
-    const { bankAccountId, categoryId, name, value, date, type } =
-      transactionUpdateInput;
-
-    await this.prismaService.transaction.update({
-      where: {
-        id: transactionId,
-      },
-      data: {
-        userId,
-        bankAccountId,
-        categoryId,
-        name,
-        value,
-        date,
-        type,
-      },
-    });
-  }
-
-  async list(userId: string): Promise<TransactionListOutput> {
-    const transaction = await this.prismaService.transaction.findMany({
-      where: { userId },
-    });
-
-    return transaction;
-  }
-
   async find(
     userId: string,
     transactionId: string,
@@ -78,13 +47,39 @@ export class TransactionPrismaRepository implements TransactionsRepository {
     });
   }
 
-  async delete(
-    userId: string,
+  async list(userId: string): Promise<TransactionListOutput> {
+    const transaction = await this.prismaService.transaction.findMany({
+      where: { userId },
+    });
+
+    return transaction;
+  }
+
+  async update(
     transactionId: string,
-  ): Promise<TransactionDeleteOutput> {
+    transactionUpdateInput: TransactionUpdateInput,
+  ): Promise<TransactionUpdateOutput> {
+    const { bankAccountId, categoryId, name, value, date, type } =
+      transactionUpdateInput;
+
+    await this.prismaService.transaction.update({
+      where: {
+        id: transactionId,
+      },
+      data: {
+        bankAccountId,
+        categoryId,
+        name,
+        value,
+        date,
+        type,
+      },
+    });
+  }
+
+  async delete(transactionId: string): Promise<TransactionDeleteOutput> {
     await this.prismaService.transaction.delete({
       where: {
-        userId,
         id: transactionId,
       },
     });

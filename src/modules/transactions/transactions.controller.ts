@@ -35,6 +35,11 @@ export class TransactionsController {
     return this.transactionsService.create(userId, transactionCreateInputDto);
   }
 
+  @Get()
+  list(@ActiveUserId() userId: string): Promise<TransactionListOutputDto> {
+    return this.transactionsService.list(userId);
+  }
+
   @Put(':transactionId')
   update(
     @ActiveUserId() userId: string,
@@ -47,11 +52,6 @@ export class TransactionsController {
       transactionId,
       transactionUpdateInputDto,
     );
-  }
-
-  @Get()
-  list(@ActiveUserId() userId: string): Promise<TransactionListOutputDto> {
-    return this.transactionsService.list(userId);
   }
 
   @Delete(':transactionId')

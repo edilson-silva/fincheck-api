@@ -25,14 +25,14 @@ export class TransactionsService {
 
   private async validateEntitiesOwnership({
     userId,
+    transactionId,
     bankAccountId,
     categoryId,
-    transactionId,
   }: {
     userId: string;
+    transactionId?: string;
     bankAccountId?: string;
     categoryId?: string;
-    transactionId?: string;
   }): Promise<void> {
     await Promise.all([
       transactionId &&
@@ -64,6 +64,12 @@ export class TransactionsService {
     );
   }
 
+  async list(userId: string): Promise<TransactionListOutputDto> {
+    const transactions = await this.transactionsRepository.list(userId);
+
+    return { transactions };
+  }
+
   async update(
     userId: string,
     transactionId: string,
@@ -73,22 +79,15 @@ export class TransactionsService {
 
     await this.validateEntitiesOwnership({
       userId,
+      transactionId,
       bankAccountId,
       categoryId,
-      transactionId,
     });
 
     return await this.transactionsRepository.update(
-      userId,
       transactionId,
       transactionUpdateInputDto,
     );
-  }
-
-  async list(userId: string): Promise<TransactionListOutputDto> {
-    const transactions = await this.transactionsRepository.list(userId);
-
-    return { transactions };
   }
 
   async delete(
@@ -99,6 +98,6 @@ export class TransactionsService {
       userId,
       transactionId,
     });
-    return await this.transactionsRepository.delete(userId, transactionId);
+    return await this.transactionsRepository.delete(transactionId);
   }
 }
