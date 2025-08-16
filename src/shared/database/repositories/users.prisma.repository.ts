@@ -3,8 +3,8 @@ import { PrismaService } from '../../../shared/database/prisma.service';
 import {
   UserCreateInput,
   UserCreateOutput,
-  UserFindOutput,
-  UserGetByIdOutput,
+  UserFindByEmailOutput,
+  UserFindByIdOutput,
   UsersRepository,
 } from './users.repository';
 
@@ -30,7 +30,7 @@ export class UsersPrismaRepository implements UsersRepository {
     return { id: user.id };
   }
 
-  async findById(id: string): Promise<UserGetByIdOutput> {
+  async findById(id: string): Promise<UserFindByIdOutput> {
     const user = await this.prismaService.user.findFirst({
       where: { id },
       select: {
@@ -42,7 +42,7 @@ export class UsersPrismaRepository implements UsersRepository {
     return user;
   }
 
-  async findByEmail(email: string): Promise<UserFindOutput | null> {
+  async findByEmail(email: string): Promise<UserFindByEmailOutput | null> {
     const user = await this.prismaService.user.findUnique({
       where: { email },
     });

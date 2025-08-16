@@ -15,20 +15,20 @@ export type UserCreateOutput = {
   id: string;
 };
 
-export type UserFindOutput = {
+export type UserFindByIdOutput = {
+  name: string;
+  email: string;
+};
+
+export type UserFindByEmailOutput = {
   id: string;
   name: string;
   email: string;
   password: string;
 };
 
-export type UserGetByIdOutput = {
-  name: string;
-  email: string;
-};
-
 export abstract class UsersRepository {
   abstract create(userCreateDto: UserCreateInput): Promise<UserCreateOutput>;
-  abstract findById(id: string): Promise<UserGetByIdOutput | null>;
-  abstract findByEmail(email: string): Promise<UserFindOutput | null>;
+  abstract findById(id: string): Promise<UserFindByIdOutput | null>;
+  abstract findByEmail(email: string): Promise<UserFindByEmailOutput | null>;
 }
