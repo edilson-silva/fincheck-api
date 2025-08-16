@@ -1,4 +1,4 @@
-import { TransactionCreateInputDto } from 'src/modules/transactions/dto/transaction-create.dto';
+import { TransactionType } from 'src/modules/transactions/entities/transaction-type.entity';
 
 export type Transaction = {
   id: string;
@@ -11,25 +11,32 @@ export type Transaction = {
   type: string;
 };
 
-export type TrnsactionCreateInputDto = {
-  id: string;
-  userId: string;
+export type TransactionCreateInput = {
   bankAccountId: string;
   categoryId: string;
   name: string;
   value: number;
   date: string;
-  type: string;
+  type: TransactionType;
 };
-export type TransactionCreateOutputDto = void;
+export type TransactionCreateOutput = void;
+
+export type TransactionUpdateInput = TransactionCreateInput;
+export type TransactionUpdateOutput = TransactionCreateOutput;
 
 export type TransactionListOutput = Transaction[];
 
 export abstract class TransactionsRepository {
   abstract create(
     userId: string,
-    transactionCreateInputDto: TransactionCreateInputDto,
-  ): Promise<TransactionCreateOutputDto>;
+    transactionCreateInput: TransactionCreateInput,
+  ): Promise<TransactionCreateOutput>;
+
+  abstract update(
+    userId: string,
+    transactionId: string,
+    transactionUpdateInput: TransactionUpdateInput,
+  ): Promise<TransactionUpdateOutput>;
 
   abstract list(userId: string): Promise<TransactionListOutput>;
 }

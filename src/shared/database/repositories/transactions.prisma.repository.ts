@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { TransactionCreateInputDto } from 'src/modules/transactions/dto/transaction-create.dto';
 import { PrismaService } from '../prisma.service';
 import {
-  TransactionCreateOutputDto,
+  TransactionCreateInput,
+  TransactionCreateOutput,
   TransactionListOutput,
   TransactionsRepository,
+  TransactionUpdateInput,
+  TransactionUpdateOutput,
 } from './transactions.repository';
 
 @Injectable()
@@ -12,12 +14,36 @@ export class TransactionPrismaRepository implements TransactionsRepository {
   constructor(private readonly prismaService: PrismaService) {}
   async create(
     userId: string,
-    transactionCreateInputDto: TransactionCreateInputDto,
-  ): Promise<TransactionCreateOutputDto> {
+    transactionCreateInputDto: TransactionCreateInput,
+  ): Promise<TransactionCreateOutput> {
     const { bankAccountId, categoryId, name, value, date, type } =
       transactionCreateInputDto;
 
     await this.prismaService.transaction.create({
+      data: {
+        userId,
+        bankAccountId,
+        categoryId,
+        name,
+        value,
+        date,
+        type,
+      },
+    });
+  }
+
+  async update(
+    userId: string,
+    transactionId: string,
+    transactionUpdateInput: TransactionUpdateInput,
+  ): Promise<TransactionUpdateOutput> {
+    const { bankAccountId, categoryId, name, value, date, type } =
+      transactionUpdateInput;
+
+    await this.prismaService.transaction.update({
+      where: {
+        id: transactionId,
+      },
       data: {
         userId,
         bankAccountId,

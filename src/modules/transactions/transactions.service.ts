@@ -7,6 +7,10 @@ import {
   TransactionCreateOutputDto,
 } from './dto/transaction-create.dto';
 import { TransactionListOutputDto } from './dto/transaction-list.dto';
+import {
+  TransactionUpdateInputDto,
+  TransactionUpdateOutputDto,
+} from './dto/transaction-update.dto';
 
 @Injectable()
 export class TransactionsService {
@@ -38,6 +42,22 @@ export class TransactionsService {
     return await this.transactionsRepository.create(
       userId,
       transactionCreateInputDto,
+    );
+  }
+
+  async update(
+    userId: string,
+    transactionId: string,
+    transactionUpdateInputDto: TransactionUpdateInputDto,
+  ): Promise<TransactionUpdateOutputDto> {
+    const { bankAccountId, categoryId } = transactionUpdateInputDto;
+
+    await this.validateEntitiesOwnership(userId, bankAccountId, categoryId);
+
+    return await this.transactionsRepository.update(
+      userId,
+      transactionId,
+      transactionUpdateInputDto,
     );
   }
 
