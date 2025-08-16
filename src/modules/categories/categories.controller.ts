@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
-import { CategoriesService } from './categories.service';
 import { CategoryListOutputDto } from './dto/category-list.dto';
+import { CategoriesService } from './services/categories.service';
 
 @Controller('categories')
 export class CategoriesController {
