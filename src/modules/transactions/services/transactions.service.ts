@@ -1,21 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { TransactionsRepository } from 'src/shared/database/repositories/transactions.repository';
-import { BankAccountsOwnershipValidateService } from '../bank-accounts/services/bank-accounts-ownership-validate.service';
-import { CategoriesOwnershipValidateService } from '../categories/services/categories-ownership-validate.service';
+import { BankAccountsOwnershipValidateService } from '../../bank-accounts/services/bank-accounts-ownership-validate.service';
+import { CategoriesOwnershipValidateService } from '../../categories/services/categories-ownership-validate.service';
 import {
   TransactionCreateInputDto,
   TransactionCreateOutputDto,
-} from './dto/transaction-create.dto';
-import { TransactionListOutputDto } from './dto/transaction-list.dto';
+} from '../dto/transaction-create.dto';
+import { TransactionListOutputDto } from '../dto/transaction-list.dto';
 import {
   TransactionUpdateInputDto,
   TransactionUpdateOutputDto,
-} from './dto/transaction-update.dto';
+} from '../dto/transaction-update.dto';
+import { TransactionsOwnershipValidateService } from './transactions-ownership-validate.service';
 
 @Injectable()
 export class TransactionsService {
   constructor(
     private readonly transactionsRepository: TransactionsRepository,
+    private readonly transactionsOwnershipValidateService: TransactionsOwnershipValidateService,
     private readonly bankAccountsOwnershipValidateService: BankAccountsOwnershipValidateService,
     private readonly categoriesOwnershipValidateService: CategoriesOwnershipValidateService,
   ) {}
@@ -24,8 +26,14 @@ export class TransactionsService {
     userId: string,
     bankAccountId: string,
     categoryId: string,
+    transactionId?: string,
   ): Promise<void> {
     await Promise.all([
+      transactionId &&
+        this.transactionsOwnershipValidateService.validate(
+          userId,
+          transactionId,
+        ),
       this.bankAccountsOwnershipValidateService.validate(userId, bankAccountId),
       this.categoriesOwnershipValidateService.validate(userId, categoryId),
     ]);
@@ -52,7 +60,12 @@ export class TransactionsService {
   ): Promise<TransactionUpdateOutputDto> {
     const { bankAccountId, categoryId } = transactionUpdateInputDto;
 
-    await this.validateEntitiesOwnership(userId, bankAccountId, categoryId);
+    await this.validateEntitiesOwnership(
+      userId,
+      bankAccountId,
+      categoryId,
+      transactionId,
+    );
 
     return await this.transactionsRepository.update(
       userId,

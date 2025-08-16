@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma.service';
 import {
   TransactionCreateInput,
   TransactionCreateOutput,
+  TransactionFindOutput,
   TransactionListOutput,
   TransactionsRepository,
   TransactionUpdateInput,
@@ -62,5 +63,17 @@ export class TransactionPrismaRepository implements TransactionsRepository {
     });
 
     return transaction;
+  }
+
+  async find(
+    userId: string,
+    transactionId: string,
+  ): Promise<TransactionFindOutput> {
+    return await this.prismaService.transaction.findFirst({
+      where: {
+        id: transactionId,
+        userId,
+      },
+    });
   }
 }

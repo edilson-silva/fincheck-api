@@ -17,7 +17,7 @@ import {
   TransactionUpdateInputDto,
   TransactionUpdateOutputDto,
 } from './dto/transaction-update.dto';
-import { TransactionsService } from './transactions.service';
+import { TransactionsService } from './services/transactions.service';
 
 @Controller('transactions')
 export class TransactionsController {

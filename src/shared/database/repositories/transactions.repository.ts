@@ -26,6 +26,8 @@ export type TransactionUpdateOutput = TransactionCreateOutput;
 
 export type TransactionListOutput = Transaction[];
 
+export type TransactionFindOutput = Transaction;
+
 export abstract class TransactionsRepository {
   abstract create(
     userId: string,
@@ -39,4 +41,9 @@ export abstract class TransactionsRepository {
   ): Promise<TransactionUpdateOutput>;
 
   abstract list(userId: string): Promise<TransactionListOutput>;
+
+  abstract find(
+    userId: string,
+    transactionId: string,
+  ): Promise<TransactionFindOutput>;
 }
