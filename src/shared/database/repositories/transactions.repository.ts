@@ -28,6 +28,8 @@ export type TransactionListOutput = Transaction[];
 
 export type TransactionFindOutput = Transaction;
 
+export type TransactionDeleteOutput = void;
+
 export abstract class TransactionsRepository {
   abstract create(
     userId: string,
@@ -46,4 +48,9 @@ export abstract class TransactionsRepository {
     userId: string,
     transactionId: string,
   ): Promise<TransactionFindOutput>;
+
+  abstract delete(
+    userId: string,
+    transactionId: string,
+  ): Promise<TransactionDeleteOutput>;
 }

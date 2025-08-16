@@ -6,6 +6,7 @@ import {
   TransactionCreateInputDto,
   TransactionCreateOutputDto,
 } from '../dto/transaction-create.dto';
+import { TransactionDeleteOutputDto } from '../dto/transaction-delete.dto';
 import { TransactionListOutputDto } from '../dto/transaction-list.dto';
 import {
   TransactionUpdateInputDto,
@@ -22,20 +23,30 @@ export class TransactionsService {
     private readonly categoriesOwnershipValidateService: CategoriesOwnershipValidateService,
   ) {}
 
-  private async validateEntitiesOwnership(
-    userId: string,
-    bankAccountId: string,
-    categoryId: string,
-    transactionId?: string,
-  ): Promise<void> {
+  private async validateEntitiesOwnership({
+    userId,
+    bankAccountId,
+    categoryId,
+    transactionId,
+  }: {
+    userId: string;
+    bankAccountId?: string;
+    categoryId?: string;
+    transactionId?: string;
+  }): Promise<void> {
     await Promise.all([
       transactionId &&
         this.transactionsOwnershipValidateService.validate(
           userId,
           transactionId,
         ),
-      this.bankAccountsOwnershipValidateService.validate(userId, bankAccountId),
-      this.categoriesOwnershipValidateService.validate(userId, categoryId),
+      bankAccountId &&
+        this.bankAccountsOwnershipValidateService.validate(
+          userId,
+          bankAccountId,
+        ),
+      categoryId &&
+        this.categoriesOwnershipValidateService.validate(userId, categoryId),
     ]);
   }
 
@@ -45,7 +56,7 @@ export class TransactionsService {
   ): Promise<TransactionCreateOutputDto> {
     const { bankAccountId, categoryId } = transactionCreateInputDto;
 
-    await this.validateEntitiesOwnership(userId, bankAccountId, categoryId);
+    await this.validateEntitiesOwnership({ userId, bankAccountId, categoryId });
 
     return await this.transactionsRepository.create(
       userId,
@@ -60,12 +71,12 @@ export class TransactionsService {
   ): Promise<TransactionUpdateOutputDto> {
     const { bankAccountId, categoryId } = transactionUpdateInputDto;
 
-    await this.validateEntitiesOwnership(
+    await this.validateEntitiesOwnership({
       userId,
       bankAccountId,
       categoryId,
       transactionId,
-    );
+    });
 
     return await this.transactionsRepository.update(
       userId,
@@ -78,5 +89,16 @@ export class TransactionsService {
     const transactions = await this.transactionsRepository.list(userId);
 
     return { transactions };
+  }
+
+  async delete(
+    userId: string,
+    transactionId: string,
+  ): Promise<TransactionDeleteOutputDto> {
+    await this.validateEntitiesOwnership({
+      userId,
+      transactionId,
+    });
+    return await this.transactionsRepository.delete(userId, transactionId);
   }
 }

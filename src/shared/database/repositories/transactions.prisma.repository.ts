@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma.service';
 import {
   TransactionCreateInput,
   TransactionCreateOutput,
+  TransactionDeleteOutput,
   TransactionFindOutput,
   TransactionListOutput,
   TransactionsRepository,
@@ -73,6 +74,18 @@ export class TransactionPrismaRepository implements TransactionsRepository {
       where: {
         id: transactionId,
         userId,
+      },
+    });
+  }
+
+  async delete(
+    userId: string,
+    transactionId: string,
+  ): Promise<TransactionDeleteOutput> {
+    await this.prismaService.transaction.delete({
+      where: {
+        userId,
+        id: transactionId,
       },
     });
   }

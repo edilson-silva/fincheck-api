@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
@@ -12,6 +15,7 @@ import {
   TransactionCreateInputDto,
   TransactionCreateOutputDto,
 } from './dto/transaction-create.dto';
+import { TransactionDeleteOutputDto } from './dto/transaction-delete.dto';
 import { TransactionListOutputDto } from './dto/transaction-list.dto';
 import {
   TransactionUpdateInputDto,
@@ -48,5 +52,14 @@ export class TransactionsController {
   @Get()
   list(@ActiveUserId() userId: string): Promise<TransactionListOutputDto> {
     return this.transactionsService.list(userId);
+  }
+
+  @Delete(':transactionId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(
+    @ActiveUserId() userId: string,
+    @Param('transactionId', ParseUUIDPipe) transactionId: string,
+  ): Promise<TransactionDeleteOutputDto> {
+    return this.transactionsService.delete(userId, transactionId);
   }
 }
