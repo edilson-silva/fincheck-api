@@ -3,8 +3,8 @@ import {
   IsHexColor,
   IsNotEmpty,
   IsNumber,
-  IsPositive,
   IsString,
+  Min,
 } from 'class-validator';
 import { BankAccountType } from '../entities/bank-account-type.entity';
 
@@ -14,7 +14,7 @@ export class BankAccountCreateInputDto {
   name: string;
 
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   initialBalance: number;
 
   @IsString()
