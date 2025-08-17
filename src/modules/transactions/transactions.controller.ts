@@ -13,6 +13,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
+import { ParseOptionalUUIDPipe } from 'src/shared/pipes/parse-optional-uuid-pipe';
 import {
   TransactionCreateInputDto,
   TransactionCreateOutputDto,
@@ -45,10 +46,12 @@ export class TransactionsController {
     @ActiveUserId() userId: string,
     @Query('month', ParseIntPipe) month: number,
     @Query('year', ParseIntPipe) year: number,
+    @Query('bankAccountId', ParseOptionalUUIDPipe) bankAccountId?: string,
   ): Promise<TransactionListOutputDto> {
     const transactionListInputDto: TransactionListInputDto = {
       month,
       year,
+      bankAccountId,
     };
     return this.transactionsService.list(userId, transactionListInputDto);
   }

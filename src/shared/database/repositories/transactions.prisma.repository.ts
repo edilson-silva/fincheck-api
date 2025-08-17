@@ -52,7 +52,7 @@ export class TransactionPrismaRepository implements TransactionsRepository {
     userId: string,
     transactionListInput: TransactionListInput,
   ): Promise<TransactionListOutput> {
-    const { month, year } = transactionListInput;
+    const { month, year, bankAccountId } = transactionListInput;
     const filterCurrentMonth = new Date(Date.UTC(year, month - 1));
     const filterNextMonth = new Date(Date.UTC(year, month));
 
@@ -63,6 +63,7 @@ export class TransactionPrismaRepository implements TransactionsRepository {
           gte: filterCurrentMonth,
           lt: filterNextMonth,
         },
+        bankAccountId,
       },
     });
 
