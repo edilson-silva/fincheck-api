@@ -27,6 +27,7 @@ export type TransactionListInput = {
   month: number;
   year: number;
   bankAccountId?: string;
+  transactionType?: TransactionType;
 };
 export type TransactionListOutput = Transaction[];
 

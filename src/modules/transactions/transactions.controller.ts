@@ -13,6 +13,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
+import { ParseOptionalEnumPipe } from 'src/shared/pipes/parse-optional-enum-pipe';
 import { ParseOptionalUUIDPipe } from 'src/shared/pipes/parse-optional-uuid-pipe';
 import {
   TransactionCreateInputDto,
@@ -27,6 +28,7 @@ import {
   TransactionUpdateInputDto,
   TransactionUpdateOutputDto,
 } from './dto/transaction-update.dto';
+import { TransactionType } from './entities/transaction-type.entity';
 import { TransactionsService } from './services/transactions.service';
 
 @Controller('transactions')
@@ -47,11 +49,14 @@ export class TransactionsController {
     @Query('month', ParseIntPipe) month: number,
     @Query('year', ParseIntPipe) year: number,
     @Query('bankAccountId', ParseOptionalUUIDPipe) bankAccountId?: string,
+    @Query('transactionType', new ParseOptionalEnumPipe(TransactionType))
+    transactionType?: TransactionType,
   ): Promise<TransactionListOutputDto> {
     const transactionListInputDto: TransactionListInputDto = {
       month,
       year,
       bankAccountId,
+      transactionType,
     };
     return this.transactionsService.list(userId, transactionListInputDto);
   }
