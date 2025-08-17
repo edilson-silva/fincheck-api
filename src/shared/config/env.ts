@@ -1,8 +1,19 @@
 import { InternalServerErrorException } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString, validateSync } from 'class-validator';
+import { plainToInstance, Transform } from 'class-transformer';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  validateSync,
+} from 'class-validator';
 
 class Env {
+  @Transform(({ value }) => value.split(','))
+  @IsArray()
+  @IsString({ each: true })
+  CORS: string;
+
   @IsString()
   @IsNotEmpty()
   DATABASE_URL: string;
