@@ -9,6 +9,9 @@ import {
 } from 'class-validator';
 
 class Env {
+  @IsNumber()
+  PORT: number;
+
   @Transform(({ value }) => value.split(','))
   @IsArray()
   @IsString({ each: true })
