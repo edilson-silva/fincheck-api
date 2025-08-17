@@ -8,3 +8,8 @@ export type TransactionDto = {
   date: Date;
   type: string;
 };
+
+export type TransactionResumeDto = {
+  type: string;
+  value: number;
+};

@@ -11,6 +11,11 @@ export type Transaction = {
   type: string;
 };
 
+export type TransactionResume = {
+  type: string;
+  value: number;
+};
+
 export type TransactionCreateInput = {
   bankAccountId: string;
   categoryId: string;

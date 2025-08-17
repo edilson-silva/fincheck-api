@@ -1,13 +1,17 @@
 import { BankAccountType } from 'src/modules/bank-accounts/entities/bank-account-type.entity';
 
-export type BankAccount = {
+export class BankAccount {
   id: string;
   name: string;
   initialBalance: number;
   type: string;
   color: string;
   userId: string;
-};
+}
+
+export class BankAccountWithBalance extends BankAccount {
+  currentBalance: number;
+}
 
 export type BankAccountCreateInput = {
   name: string;
@@ -19,7 +23,7 @@ export type BankAccountCreateOutput = void;
 
 export type BankAccountFindOutput = BankAccount;
 
-export type BankAccountListOutput = BankAccount[];
+export type BankAccountListOutput = BankAccountWithBalance[];
 
 export type BankAccountUpdateInput = BankAccountCreateInput;
 export type BankAccountUpdateOutput = BankAccountCreateOutput;

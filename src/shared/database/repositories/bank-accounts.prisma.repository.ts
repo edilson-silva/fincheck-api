@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { TransactionType } from 'generated/prisma';
 import { PrismaService } from '../prisma.service';
 import {
   BankAccountCreateInput,
@@ -10,6 +11,7 @@ import {
   BankAccountUpdateInput,
   BankAccountUpdateOutput,
 } from './bank-accounts.repository';
+import { TransactionResume } from './transactions.repository';
 
 @Injectable()
 export class BankAccountsPrismaRepository implements BankAccountsRepository {
@@ -49,9 +51,33 @@ export class BankAccountsPrismaRepository implements BankAccountsRepository {
   async list(userId: string): Promise<BankAccountListOutput> {
     const bankAccounts = await this.prismaService.bankAccount.findMany({
       where: { userId },
+      include: {
+        transactions: {
+          select: {
+            type: true,
+            value: true,
+          },
+        },
+      },
     });
 
-    return bankAccounts;
+    return bankAccounts.map(({ transactions, ...bankAccount }) => {
+      const totalTransactions = transactions.reduce(
+        (acc: number, transaction: TransactionResume) =>
+          acc +
+          (transaction.type === TransactionType.INCOME
+            ? transaction.value
+            : -transaction.value),
+        0,
+      );
+
+      const currentBalance = bankAccount.initialBalance + totalTransactions;
+
+      return {
+        ...bankAccount,
+        currentBalance,
+      };
+    });
   }
 
   async update(
