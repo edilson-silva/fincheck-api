@@ -7,7 +7,10 @@ import {
   TransactionCreateOutputDto,
 } from '../dto/transaction-create.dto';
 import { TransactionDeleteOutputDto } from '../dto/transaction-delete.dto';
-import { TransactionListOutputDto } from '../dto/transaction-list.dto';
+import {
+  TransactionListInputDto,
+  TransactionListOutputDto,
+} from '../dto/transaction-list.dto';
 import {
   TransactionUpdateInputDto,
   TransactionUpdateOutputDto,
@@ -64,8 +67,14 @@ export class TransactionsService {
     );
   }
 
-  async list(userId: string): Promise<TransactionListOutputDto> {
-    const transactions = await this.transactionsRepository.list(userId);
+  async list(
+    userId: string,
+    transactionListInputDto: TransactionListInputDto,
+  ): Promise<TransactionListOutputDto> {
+    const transactions = await this.transactionsRepository.list(
+      userId,
+      transactionListInputDto,
+    );
 
     return { transactions };
   }

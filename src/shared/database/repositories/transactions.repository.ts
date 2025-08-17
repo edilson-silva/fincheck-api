@@ -23,6 +23,10 @@ export type TransactionCreateOutput = void;
 
 export type TransactionFindOutput = Transaction;
 
+export type TransactionListInput = {
+  month: number;
+  year: number;
+};
 export type TransactionListOutput = Transaction[];
 
 export type TransactionUpdateInput = TransactionCreateInput;
@@ -41,7 +45,10 @@ export abstract class TransactionsRepository {
     transactionId: string,
   ): Promise<TransactionFindOutput>;
 
-  abstract list(userId: string): Promise<TransactionListOutput>;
+  abstract list(
+    userId: string,
+    transactionListInput: TransactionListInput,
+  ): Promise<TransactionListOutput>;
 
   abstract update(
     transactionId: string,

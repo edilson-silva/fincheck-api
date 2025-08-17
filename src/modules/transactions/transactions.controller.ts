@@ -6,9 +6,11 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
 import {
@@ -16,7 +18,10 @@ import {
   TransactionCreateOutputDto,
 } from './dto/transaction-create.dto';
 import { TransactionDeleteOutputDto } from './dto/transaction-delete.dto';
-import { TransactionListOutputDto } from './dto/transaction-list.dto';
+import {
+  TransactionListInputDto,
+  TransactionListOutputDto,
+} from './dto/transaction-list.dto';
 import {
   TransactionUpdateInputDto,
   TransactionUpdateOutputDto,
@@ -36,8 +41,16 @@ export class TransactionsController {
   }
 
   @Get()
-  list(@ActiveUserId() userId: string): Promise<TransactionListOutputDto> {
-    return this.transactionsService.list(userId);
+  list(
+    @ActiveUserId() userId: string,
+    @Query('month', ParseIntPipe) month: number,
+    @Query('year', ParseIntPipe) year: number,
+  ): Promise<TransactionListOutputDto> {
+    const transactionListInputDto: TransactionListInputDto = {
+      month,
+      year,
+    };
+    return this.transactionsService.list(userId, transactionListInputDto);
   }
 
   @Put(':transactionId')

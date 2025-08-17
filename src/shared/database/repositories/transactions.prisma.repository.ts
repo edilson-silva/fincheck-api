@@ -5,6 +5,7 @@ import {
   TransactionCreateOutput,
   TransactionDeleteOutput,
   TransactionFindOutput,
+  TransactionListInput,
   TransactionListOutput,
   TransactionsRepository,
   TransactionUpdateInput,
@@ -47,9 +48,22 @@ export class TransactionPrismaRepository implements TransactionsRepository {
     });
   }
 
-  async list(userId: string): Promise<TransactionListOutput> {
+  async list(
+    userId: string,
+    transactionListInput: TransactionListInput,
+  ): Promise<TransactionListOutput> {
+    const { month, year } = transactionListInput;
+    const filterCurrentMonth = new Date(Date.UTC(year, month - 1));
+    const filterNextMonth = new Date(Date.UTC(year, month));
+
     const transaction = await this.prismaService.transaction.findMany({
-      where: { userId },
+      where: {
+        userId,
+        date: {
+          gte: filterCurrentMonth,
+          lt: filterNextMonth,
+        },
+      },
     });
 
     return transaction;
