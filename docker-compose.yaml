@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  fincheck-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: fincheck-api
+    depends_on:
+      - fincheck-db
+    volumes:
+      - .:/usr/src/app  # Mount the current directory to /app in the container
+      - /usr/src/app/node_modules  # Exclude node_modules from the volume to prevent conflicts
+    env_file:
+      - .env
+    command: npm run start:dev
+    ports:
+      - "3000:3000"
+
+  fincheck-db:
+    image: postgres:alpine
+    container_name: fincheck-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ficheck
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+    postgres-data:
