@@ -20,6 +20,7 @@ model User {
   password String
 
   bankAccounts BankAccount[]
+  categories   Category[]
 
   @@map("users")
 }
@@ -42,4 +43,23 @@ model BankAccount {
   user User @relation(fields: [userId], references: [id])
 
   @@map("bank_accounts")
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+
+  @@map("transaction_type")
+}
+
+model Category {
+  id     String          @id @default(uuid()) @db.Uuid
+  userId String          @map("user_id") @db.Uuid
+  name   String
+  icon   String
+  type   TransactionType
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("categories")
 }
