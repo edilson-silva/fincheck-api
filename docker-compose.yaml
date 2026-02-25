@@ -23,7 +23,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=ficheck
+      - POSTGRES_DB=fincheck
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
