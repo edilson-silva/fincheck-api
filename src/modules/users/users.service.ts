@@ -1,17 +1,17 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { BCryptAdapter } from 'src/shared/adapters/bcrypt.adapter';
-import { PrismaService } from 'src/shared/database/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { UsersRepository } from 'src/shared/database/repositories/users.repository';
+import { CreateUserInputDto, CreateUserOutputDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(private readonly usersRepository: UsersRepository) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const { email, name, password } = createUserDto;
-    const emailTaken = await this.prismaService.user.findUnique({
-      where: { email },
-    });
+  async create(
+    createUserInputDto: CreateUserInputDto,
+  ): Promise<CreateUserOutputDto> {
+    const { name, email, password } = createUserInputDto;
+    const emailTaken = await this.usersRepository.findByEmail(email);
 
     if (emailTaken) {
       throw new ConflictException('Email already in use');
@@ -19,33 +19,7 @@ export class UsersService {
 
     const hashedPassword = await BCryptAdapter.hash(password);
 
-    const user = await this.prismaService.user.create({
-      data: {
-        email,
-        name,
-        password: hashedPassword,
-        categories: {
-          createMany: {
-            data: [
-              // Income
-              { name: 'Salary', icon: 'travel', type: 'INCOME' },
-              { name: 'Freelance', icon: 'freelance', type: 'INCOME' },
-              { name: 'Other', icon: 'other', type: 'INCOME' },
-              // Expense
-              { name: 'Home', icon: 'home', type: 'EXPENSE' },
-              { name: 'Food', icon: 'food', type: 'EXPENSE' },
-              { name: 'Education', icon: 'education', type: 'EXPENSE' },
-              { name: 'Fun', icon: 'fun', type: 'EXPENSE' },
-              { name: 'Grocery', icon: 'grocery', type: 'EXPENSE' },
-              { name: 'Clothes', icon: 'clothes', type: 'EXPENSE' },
-              { name: 'Transportation', icon: 'transport', type: 'EXPENSE' },
-              { name: 'Travel', icon: 'travel', type: 'EXPENSE' },
-              { name: 'Other', icon: 'other', type: 'EXPENSE' },
-            ],
-          },
-        },
-      },
-    });
+    const user = await this.usersRepository.create(name, email, hashedPassword);
 
     return user;
   }
