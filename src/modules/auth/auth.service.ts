@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { BCryptAdapter } from 'src/shared/adapters/bcrypt.adapter';
 import { UsersRepository } from 'src/shared/database/repositories/users.repository';
 import { SigninInputDto, SigninOutputDto } from './dto/signin.dto';
+import { SignUpInputDto, SignUpOutputDto } from './dto/signup.dto';
 
 @Injectable()
 export class AuthService {
@@ -10,6 +11,39 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly usersRepository: UsersRepository,
   ) {}
+
+  private async generateAccessToken(
+    userId: string,
+    email: string,
+  ): Promise<string> {
+    const tokenPayload = { sub: userId, email };
+    return await this.jwtService.signAsync(tokenPayload);
+  }
+
+  async signup(signUpInputDto: SignUpInputDto): Promise<SignUpOutputDto> {
+    const { name, email, password } = signUpInputDto;
+
+    const user = await this.usersRepository.findByEmail(email);
+
+    if (user) {
+      throw new UnauthorizedException('Email already in use');
+    }
+
+    const hashedPassword = await BCryptAdapter.hash(password);
+
+    const newUser = await this.usersRepository.create(
+      name,
+      email,
+      hashedPassword,
+    );
+
+    const accessToken = await this.generateAccessToken(
+      newUser.id,
+      newUser.email,
+    );
+
+    return { accessToken };
+  }
 
   async signin(signInInputDto: SigninInputDto): Promise<SigninOutputDto> {
     const { email, password } = signInInputDto;
