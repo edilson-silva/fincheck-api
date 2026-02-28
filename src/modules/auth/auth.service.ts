@@ -12,11 +12,8 @@ export class AuthService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  private async generateAccessToken(
-    userId: string,
-    email: string,
-  ): Promise<string> {
-    const tokenPayload = { sub: userId, email };
+  private async generateAccessToken(userId: string): Promise<string> {
+    const tokenPayload = { sub: userId };
     return await this.jwtService.signAsync(tokenPayload);
   }
 
@@ -37,10 +34,7 @@ export class AuthService {
       hashedPassword,
     );
 
-    const accessToken = await this.generateAccessToken(
-      newUser.id,
-      newUser.email,
-    );
+    const accessToken = await this.generateAccessToken(newUser.id);
 
     return { accessToken };
   }
@@ -63,7 +57,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const accessToken = await this.generateAccessToken(user.id, user.email);
+    const accessToken = await this.generateAccessToken(user.id);
 
     return { accessToken };
   }
