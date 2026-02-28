@@ -1,26 +1,18 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { BCryptAdapter } from 'src/shared/adapters/bcrypt.adapter';
 import { UsersRepository } from 'src/shared/database/repositories/users.repository';
-import { CreateUserInputDto, CreateUserOutputDto } from './dto/create-user.dto';
+import { GetUserOutputDto } from './dto/get-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async create(
-    createUserInputDto: CreateUserInputDto,
-  ): Promise<CreateUserOutputDto> {
-    const { name, email, password } = createUserInputDto;
-    const emailTaken = await this.usersRepository.findByEmail(email);
+  async getUserById(id: string): Promise<GetUserOutputDto> {
+    const user = await this.usersRepository.findById(id);
 
-    if (emailTaken) {
-      throw new ConflictException('Email already in use');
+    if (!user) {
+      throw new ConflictException('User not found');
     }
 
-    const hashedPassword = await BCryptAdapter.hash(password);
-
-    const user = await this.usersRepository.create(name, email, hashedPassword);
-
-    return user;
+    return { name: user.name, email: user.email };
   }
 }

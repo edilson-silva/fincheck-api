@@ -45,4 +45,14 @@ export class UsersRepository {
       where: { email },
     });
   }
+
+  async findById(
+    id: string,
+    selectFields: string[] = ['name', 'email'],
+  ): Promise<Partial<UserEntity> | null> {
+    return await this.prismaService.user.findUnique({
+      where: { id },
+      select: Object.fromEntries(selectFields.map((field) => [field, true])),
+    });
+  }
 }
