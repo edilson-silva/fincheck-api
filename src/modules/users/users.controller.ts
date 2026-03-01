@@ -1,5 +1,5 @@
-import { Controller, Get, Req } from '@nestjs/common';
-import { Request } from 'express';
+import { Controller, Get } from '@nestjs/common';
+import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
 import { GetUserOutputDto } from './dto/get-user.dto';
 import { UsersService } from './users.service';
 
@@ -8,7 +8,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('/me')
-  async me(@Req() request: Request): Promise<GetUserOutputDto> {
-    return await this.usersService.getUserById(request['userId']);
+  async me(@ActiveUserId() userId: string): Promise<GetUserOutputDto> {
+    return await this.usersService.getUserById(userId);
   }
 }
