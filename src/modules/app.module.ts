@@ -5,9 +5,10 @@ import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { DatabaseModule } from './database.module';
 import { UsersModule } from './users/users.module';
+import { BankAccountsModule } from './bank-accounts/bank-accounts.module';
 
 @Module({
-  imports: [UsersModule, DatabaseModule, AuthModule, CategoriesModule],
+  imports: [UsersModule, DatabaseModule, AuthModule, CategoriesModule, BankAccountsModule],
   controllers: [],
   providers: [
     {
