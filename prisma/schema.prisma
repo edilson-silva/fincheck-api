@@ -35,6 +35,7 @@ enum BankAccountType {
 
 model BankAccount {
   id             String          @id @default(uuid()) @db.Uuid
+  name           String
   userId         String          @db.Uuid
   initialBalance Float           @map("initial_balance")
   type           BankAccountType
