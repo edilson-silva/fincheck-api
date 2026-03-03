@@ -4,6 +4,7 @@ import {
   CreateBankAccountInputDto,
   CreateBankAccountOutputDto,
 } from './dto/create-bank-account.dto';
+import { ListBankAccountsOutputDto } from './dto/list-bank-accounts.dto';
 
 @Injectable()
 export class BankAccountsService {
@@ -22,5 +23,9 @@ export class BankAccountsService {
       createBankAccountInputDto.type,
       createBankAccountInputDto.color,
     );
+  }
+
+  async list(userId: string): Promise<ListBankAccountsOutputDto> {
+    return await this.bankAccountsRepository.list(userId);
   }
 }

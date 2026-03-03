@@ -33,4 +33,21 @@ export class BankAccountsRepository {
       color: newBankAccount.color,
     };
   }
+
+  async list(userId: string): Promise<BankAccountEntity[]> {
+    const bankAccounts = await this.prismaService.bankAccount.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    return bankAccounts.map((bankAccount) => ({
+      id: bankAccount.id,
+      userId: bankAccount.userId,
+      name: bankAccount.name,
+      initialBalance: bankAccount.initialBalance,
+      type: bankAccount.type as BankAccountType,
+      color: bankAccount.color,
+    }));
+  }
 }
