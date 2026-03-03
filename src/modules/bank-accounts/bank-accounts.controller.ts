@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
@@ -65,6 +67,7 @@ export class BankAccountsController {
   }
 
   @Delete(':bankAccountId')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async delete(
     @ActiveUserId() userId: string,
     @Param('bankAccountId', ParseUUIDPipe) bankAccountId: string,
