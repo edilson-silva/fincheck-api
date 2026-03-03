@@ -53,4 +53,17 @@ export class BankAccountsService {
       updateBankAccountInputDto,
     );
   }
+
+  async delete(userId: string, bankAccountId: string): Promise<void> {
+    const bankAccount = await this.bankAccountsRepository.findById(
+      userId,
+      bankAccountId,
+    );
+
+    if (!bankAccount) {
+      throw new NotFoundException('Bank account not found');
+    }
+
+    await this.bankAccountsRepository.delete(userId, bankAccountId);
+  }
 }

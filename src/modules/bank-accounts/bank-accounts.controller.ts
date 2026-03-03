@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
 import { BankAccountsService } from './bank-accounts.service';
 import {
@@ -44,5 +52,13 @@ export class BankAccountsController {
       bankAccountId,
       updateBankAccountInputDto,
     );
+  }
+
+  @Delete(':id')
+  async delete(
+    @ActiveUserId() userId: string,
+    @Param('id') bankAccountId: string,
+  ): Promise<void> {
+    await this.bankAccountsService.delete(userId, bankAccountId);
   }
 }

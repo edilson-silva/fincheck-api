@@ -98,4 +98,13 @@ export class BankAccountsRepository {
       color: updatedBankAccount.color,
     };
   }
+
+  async delete(userId: string, bankAccountId: string): Promise<void> {
+    await this.prismaService.bankAccount.delete({
+      where: {
+        id: bankAccountId,
+        userId,
+      },
+    });
+  }
 }
