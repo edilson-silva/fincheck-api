@@ -26,8 +26,8 @@ export class BankAccountsController {
 
   @Post()
   async create(
-    @Body() createBankAccountInputDto: CreateBankAccountInputDto,
     @ActiveUserId() userId: string,
+    @Body() createBankAccountInputDto: CreateBankAccountInputDto,
   ): Promise<CreateBankAccountOutputDto> {
     return await this.bankAccountsService.create(
       userId,
@@ -36,25 +36,25 @@ export class BankAccountsController {
   }
 
   @Get()
-  async list(
+  async listByUserId(
     @ActiveUserId() userId: string,
   ): Promise<ListBankAccountsOutputDto> {
-    return await this.bankAccountsService.list(userId);
+    return await this.bankAccountsService.listByUserId(userId);
   }
 
-  @Get(':id')
+  @Get(':bankAccountId')
   async getById(
     @ActiveUserId() userId: string,
-    @Param('id') bankAccountId: string,
+    @Param('bankAccountId') bankAccountId: string,
   ): Promise<GetBankAccountOutputDto> {
     return await this.bankAccountsService.getById(userId, bankAccountId);
   }
 
-  @Put(':id')
+  @Put(':bankAccountId')
   async update(
-    @Body() updateBankAccountInputDto: UpdateBankAccountInputDto,
     @ActiveUserId() userId: string,
-    @Param('id') bankAccountId: string,
+    @Param('bankAccountId') bankAccountId: string,
+    @Body() updateBankAccountInputDto: UpdateBankAccountInputDto,
   ): Promise<UpdateBankAccountOutputDto> {
     return await this.bankAccountsService.update(
       userId,
@@ -63,10 +63,10 @@ export class BankAccountsController {
     );
   }
 
-  @Delete(':id')
+  @Delete(':bankAccountId')
   async delete(
     @ActiveUserId() userId: string,
-    @Param('id') bankAccountId: string,
+    @Param('bankAccountId') bankAccountId: string,
   ): Promise<void> {
     await this.bankAccountsService.delete(userId, bankAccountId);
   }

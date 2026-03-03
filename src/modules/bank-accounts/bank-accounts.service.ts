@@ -30,8 +30,8 @@ export class BankAccountsService {
     );
   }
 
-  async list(userId: string): Promise<ListBankAccountsOutputDto> {
-    return await this.bankAccountsRepository.list(userId);
+  async listByUserId(userId: string): Promise<ListBankAccountsOutputDto> {
+    return await this.bankAccountsRepository.listByUserId(userId);
   }
 
   async getById(

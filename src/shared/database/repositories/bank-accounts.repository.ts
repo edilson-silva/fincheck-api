@@ -7,6 +7,17 @@ import { PrismaService } from '../prisma.service';
 export class BankAccountsRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
+  private mapToBankAccountEntity(bankAccount: any): BankAccountEntity {
+    return {
+      id: bankAccount.id,
+      userId: bankAccount.userId,
+      name: bankAccount.name,
+      initialBalance: bankAccount.initialBalance,
+      type: bankAccount.type as BankAccountType,
+      color: bankAccount.color,
+    };
+  }
+
   async create(
     userId: string,
     name: string,
@@ -24,31 +35,19 @@ export class BankAccountsRepository {
       },
     });
 
-    return {
-      id: newBankAccount.id,
-      userId: newBankAccount.userId,
-      name: newBankAccount.name,
-      initialBalance: newBankAccount.initialBalance,
-      type: newBankAccount.type as BankAccountType,
-      color: newBankAccount.color,
-    };
+    return this.mapToBankAccountEntity(newBankAccount);
   }
 
-  async list(userId: string): Promise<BankAccountEntity[]> {
+  async listByUserId(userId: string): Promise<BankAccountEntity[]> {
     const bankAccounts = await this.prismaService.bankAccount.findMany({
       where: {
         userId,
       },
     });
 
-    return bankAccounts.map((bankAccount) => ({
-      id: bankAccount.id,
-      userId: bankAccount.userId,
-      name: bankAccount.name,
-      initialBalance: bankAccount.initialBalance,
-      type: bankAccount.type as BankAccountType,
-      color: bankAccount.color,
-    }));
+    return bankAccounts.map((bankAccount) =>
+      this.mapToBankAccountEntity(bankAccount),
+    );
   }
 
   async findById(
@@ -62,18 +61,9 @@ export class BankAccountsRepository {
       },
     });
 
-    if (!bankAccount) {
-      return null;
-    }
+    if (!bankAccount) return null;
 
-    return {
-      id: bankAccount.id,
-      userId: bankAccount.userId,
-      name: bankAccount.name,
-      initialBalance: bankAccount.initialBalance,
-      type: bankAccount.type as BankAccountType,
-      color: bankAccount.color,
-    };
+    return this.mapToBankAccountEntity(bankAccount);
   }
 
   async update(
@@ -83,27 +73,20 @@ export class BankAccountsRepository {
   ): Promise<BankAccountEntity> {
     const updatedBankAccount = await this.prismaService.bankAccount.update({
       where: {
-        id: bankAccountId,
         userId,
+        id: bankAccountId,
       },
       data,
     });
 
-    return {
-      id: updatedBankAccount.id,
-      userId: updatedBankAccount.userId,
-      name: updatedBankAccount.name,
-      initialBalance: updatedBankAccount.initialBalance,
-      type: updatedBankAccount.type as BankAccountType,
-      color: updatedBankAccount.color,
-    };
+    return this.mapToBankAccountEntity(updatedBankAccount);
   }
 
   async delete(userId: string, bankAccountId: string): Promise<void> {
     await this.prismaService.bankAccount.delete({
       where: {
-        id: bankAccountId,
         userId,
+        id: bankAccountId,
       },
     });
   }
