@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -45,7 +46,7 @@ export class BankAccountsController {
   @Get(':bankAccountId')
   async getById(
     @ActiveUserId() userId: string,
-    @Param('bankAccountId') bankAccountId: string,
+    @Param('bankAccountId', ParseUUIDPipe) bankAccountId: string,
   ): Promise<GetBankAccountOutputDto> {
     return await this.bankAccountsService.getById(userId, bankAccountId);
   }
@@ -53,7 +54,7 @@ export class BankAccountsController {
   @Put(':bankAccountId')
   async update(
     @ActiveUserId() userId: string,
-    @Param('bankAccountId') bankAccountId: string,
+    @Param('bankAccountId', ParseUUIDPipe) bankAccountId: string,
     @Body() updateBankAccountInputDto: UpdateBankAccountInputDto,
   ): Promise<UpdateBankAccountOutputDto> {
     return await this.bankAccountsService.update(
@@ -66,7 +67,7 @@ export class BankAccountsController {
   @Delete(':bankAccountId')
   async delete(
     @ActiveUserId() userId: string,
-    @Param('bankAccountId') bankAccountId: string,
+    @Param('bankAccountId', ParseUUIDPipe) bankAccountId: string,
   ): Promise<void> {
     await this.bankAccountsService.delete(userId, bankAccountId);
   }
