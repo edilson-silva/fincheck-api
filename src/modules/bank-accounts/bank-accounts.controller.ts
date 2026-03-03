@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
 import { BankAccountsService } from './bank-accounts.service';
 import {
@@ -6,6 +6,10 @@ import {
   CreateBankAccountOutputDto,
 } from './dto/create-bank-account.dto';
 import { ListBankAccountsOutputDto } from './dto/list-bank-accounts.dto';
+import {
+  UpdateBankAccountInputDto,
+  UpdateBankAccountOutputDto,
+} from './dto/update-bank-account.dto';
 
 @Controller('bank-accounts')
 export class BankAccountsController {
@@ -27,5 +31,18 @@ export class BankAccountsController {
     @ActiveUserId() userId: string,
   ): Promise<ListBankAccountsOutputDto> {
     return await this.bankAccountsService.list(userId);
+  }
+
+  @Put(':id')
+  async update(
+    @Body() updateBankAccountInputDto: UpdateBankAccountInputDto,
+    @ActiveUserId() userId: string,
+    @Param('id') bankAccountId: string,
+  ): Promise<UpdateBankAccountOutputDto> {
+    return await this.bankAccountsService.update(
+      userId,
+      bankAccountId,
+      updateBankAccountInputDto,
+    );
   }
 }
