@@ -1,35 +1,23 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { BankAccountsRepository } from 'src/shared/database/repositories/bank-accounts.repository';
 import {
   CreateBankAccountInputDto,
   CreateBankAccountOutputDto,
-} from './dto/create-bank-account.dto';
-import { GetBankAccountOutputDto } from './dto/get-bank-account.dto';
-import { ListBankAccountsOutputDto } from './dto/list-bank-accounts.dto';
+} from '../dto/create-bank-account.dto';
+import { GetBankAccountOutputDto } from '../dto/get-bank-account.dto';
+import { ListBankAccountsOutputDto } from '../dto/list-bank-accounts.dto';
 import {
   UpdateBankAccountInputDto,
   UpdateBankAccountOutputDto,
-} from './dto/update-bank-account.dto';
+} from '../dto/update-bank-account.dto';
+import { BankAccountOwnershipValidateService } from './bank-account-ownership-validate.service';
 
 @Injectable()
 export class BankAccountsService {
   constructor(
     private readonly bankAccountsRepository: BankAccountsRepository,
+    private readonly bankAccountOwnershipValidate: BankAccountOwnershipValidateService,
   ) {}
-
-  private async validateBankAccountOwnership(
-    userId: string,
-    bankAccountId: string,
-  ) {
-    const bankAccount = await this.bankAccountsRepository.findById(
-      userId,
-      bankAccountId,
-    );
-
-    if (!bankAccount) {
-      throw new NotFoundException('Bank account not found.');
-    }
-  }
 
   async create(
     userId: string,
@@ -52,7 +40,7 @@ export class BankAccountsService {
     userId: string,
     bankAccountId: string,
   ): Promise<GetBankAccountOutputDto> {
-    await this.validateBankAccountOwnership(userId, bankAccountId);
+    await this.bankAccountOwnershipValidate.validate(userId, bankAccountId);
 
     const bankAccount = await this.bankAccountsRepository.findById(
       userId,
@@ -67,7 +55,7 @@ export class BankAccountsService {
     bankAccountId: string,
     updateBankAccountInputDto: UpdateBankAccountInputDto,
   ): Promise<UpdateBankAccountOutputDto> {
-    await this.validateBankAccountOwnership(userId, bankAccountId);
+    await this.bankAccountOwnershipValidate.validate(userId, bankAccountId);
 
     return await this.bankAccountsRepository.update(
       userId,
@@ -77,15 +65,7 @@ export class BankAccountsService {
   }
 
   async delete(userId: string, bankAccountId: string): Promise<void> {
-    const bankAccount = await this.bankAccountsRepository.findById(
-      userId,
-      bankAccountId,
-    );
-
-    if (!bankAccount) {
-      throw new NotFoundException('Bank account not found');
-    }
-
+    await this.bankAccountOwnershipValidate.validate(userId, bankAccountId);
     await this.bankAccountsRepository.delete(userId, bankAccountId);
   }
 }

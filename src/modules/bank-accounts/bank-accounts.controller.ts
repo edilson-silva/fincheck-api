@@ -11,7 +11,6 @@ import {
   Put,
 } from '@nestjs/common';
 import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
-import { BankAccountsService } from './bank-accounts.service';
 import {
   CreateBankAccountInputDto,
   CreateBankAccountOutputDto,
@@ -22,6 +21,7 @@ import {
   UpdateBankAccountInputDto,
   UpdateBankAccountOutputDto,
 } from './dto/update-bank-account.dto';
+import { BankAccountsService } from './services/bank-accounts.service';
 
 @Controller('bank-accounts')
 export class BankAccountsController {
