@@ -6,6 +6,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
+import { BankAccountEntity } from '../entities/bank-account.entity';
 import { BankAccountType } from '../types/bank-accounts-type.type';
 
 export class CreateBankAccountInputDto {
@@ -26,11 +27,4 @@ export class CreateBankAccountInputDto {
   color: string;
 }
 
-export class CreateBankAccountOutputDto {
-  id: string;
-  userId: string;
-  name: string;
-  initialBalance: number;
-  type: BankAccountType;
-  color: string;
-}
+export type CreateBankAccountOutputDto = BankAccountEntity;

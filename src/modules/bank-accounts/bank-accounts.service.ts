@@ -17,6 +17,20 @@ export class BankAccountsService {
     private readonly bankAccountsRepository: BankAccountsRepository,
   ) {}
 
+  private async validateBankAccountOwnership(
+    userId: string,
+    bankAccountId: string,
+  ) {
+    const bankAccount = await this.bankAccountsRepository.findById(
+      userId,
+      bankAccountId,
+    );
+
+    if (!bankAccount) {
+      throw new NotFoundException('Bank account not found.');
+    }
+  }
+
   async create(
     userId: string,
     createBankAccountInputDto: CreateBankAccountInputDto,
@@ -38,14 +52,12 @@ export class BankAccountsService {
     userId: string,
     bankAccountId: string,
   ): Promise<GetBankAccountOutputDto> {
+    await this.validateBankAccountOwnership(userId, bankAccountId);
+
     const bankAccount = await this.bankAccountsRepository.findById(
       userId,
       bankAccountId,
     );
-
-    if (!bankAccount) {
-      throw new NotFoundException('Bank account not found');
-    }
 
     return bankAccount;
   }
@@ -55,14 +67,7 @@ export class BankAccountsService {
     bankAccountId: string,
     updateBankAccountInputDto: UpdateBankAccountInputDto,
   ): Promise<UpdateBankAccountOutputDto> {
-    const bankAccount = await this.bankAccountsRepository.findById(
-      userId,
-      bankAccountId,
-    );
-
-    if (!bankAccount) {
-      throw new NotFoundException('Bank account not found');
-    }
+    await this.validateBankAccountOwnership(userId, bankAccountId);
 
     return await this.bankAccountsRepository.update(
       userId,
