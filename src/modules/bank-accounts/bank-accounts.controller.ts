@@ -13,6 +13,7 @@ import {
   CreateBankAccountInputDto,
   CreateBankAccountOutputDto,
 } from './dto/create-bank-account.dto';
+import { GetBankAccountOutputDto } from './dto/get-bank-account.dto';
 import { ListBankAccountsOutputDto } from './dto/list-bank-accounts.dto';
 import {
   UpdateBankAccountInputDto,
@@ -39,6 +40,14 @@ export class BankAccountsController {
     @ActiveUserId() userId: string,
   ): Promise<ListBankAccountsOutputDto> {
     return await this.bankAccountsService.list(userId);
+  }
+
+  @Get(':id')
+  async getById(
+    @ActiveUserId() userId: string,
+    @Param('id') bankAccountId: string,
+  ): Promise<GetBankAccountOutputDto> {
+    return await this.bankAccountsService.getById(userId, bankAccountId);
   }
 
   @Put(':id')

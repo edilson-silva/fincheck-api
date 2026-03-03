@@ -4,6 +4,7 @@ import {
   CreateBankAccountInputDto,
   CreateBankAccountOutputDto,
 } from './dto/create-bank-account.dto';
+import { GetBankAccountOutputDto } from './dto/get-bank-account.dto';
 import { ListBankAccountsOutputDto } from './dto/list-bank-accounts.dto';
 import {
   UpdateBankAccountInputDto,
@@ -31,6 +32,22 @@ export class BankAccountsService {
 
   async list(userId: string): Promise<ListBankAccountsOutputDto> {
     return await this.bankAccountsRepository.list(userId);
+  }
+
+  async getById(
+    userId: string,
+    bankAccountId: string,
+  ): Promise<GetBankAccountOutputDto> {
+    const bankAccount = await this.bankAccountsRepository.findById(
+      userId,
+      bankAccountId,
+    );
+
+    if (!bankAccount) {
+      throw new NotFoundException('Bank account not found');
+    }
+
+    return bankAccount;
   }
 
   async update(
