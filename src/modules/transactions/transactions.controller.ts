@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
@@ -17,7 +20,7 @@ import {
   UpdateTransactionInputDto,
   UpdateTransactionOutputDto,
 } from './dto/update-transaction.dto';
-import { TransactionsService } from './transactions.service';
+import { TransactionsService } from './services/transactions.service';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -49,5 +52,14 @@ export class TransactionsController {
       transactionId,
       updateTransactionInputDto,
     );
+  }
+
+  @Delete(':transactionId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(
+    @ActiveUserId() userId: string,
+    @Param('transactionId', ParseUUIDPipe) transactionId: string,
+  ): Promise<void> {
+    return await this.transactionsService.delete(userId, transactionId);
   }
 }

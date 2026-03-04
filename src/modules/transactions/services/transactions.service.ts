@@ -1,16 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { TransactionsRepository } from 'src/shared/database/repositories/transactions.repository';
-import { BankAccountOwnershipValidateService } from '../bank-accounts/services/bank-account-ownership-validate.service';
-import { CategoryOwnershipValidateService } from '../categories/services/category-ownership-validate.service';
+import { BankAccountOwnershipValidateService } from '../../bank-accounts/services/bank-account-ownership-validate.service';
+import { CategoryOwnershipValidateService } from '../../categories/services/category-ownership-validate.service';
 import {
   CreateTransactionInputDto,
   CreateTransactionOutputDto,
-} from './dto/create-transaction.dto';
-import { ListTransactionsOutputDto } from './dto/list-transaction.dto';
+} from '../dto/create-transaction.dto';
+import { ListTransactionsOutputDto } from '../dto/list-transaction.dto';
 import {
   UpdateTransactionInputDto,
   UpdateTransactionOutputDto,
-} from './dto/update-transaction.dto';
+} from '../dto/update-transaction.dto';
+import { TransactionOwnershipValidateService } from './transaction-ownership-validate.service';
 
 @Injectable()
 export class TransactionsService {
@@ -18,28 +19,26 @@ export class TransactionsService {
     private readonly transactionsRepository: TransactionsRepository,
     private readonly bankAccountOwnershipValidate: BankAccountOwnershipValidateService,
     private readonly categoryOwnershipValidate: CategoryOwnershipValidateService,
+    private readonly transactionOwnershipValidate: TransactionOwnershipValidateService,
   ) {}
 
-  private async validateEntitiesOwnership(
-    userId: string,
-    bankAccountId: string,
-    categoryId: string,
-    transactionId?: string,
-  ) {
-    if (transactionId) {
-      const transaction = await this.transactionsRepository.findById(
-        userId,
-        transactionId,
-      );
-
-      if (!transaction) {
-        throw new NotFoundException('Transaction not found.');
-      }
-    }
-
+  private async validateEntitiesOwnership({
+    userId,
+    bankAccountId,
+    categoryId,
+    transactionId,
+  }: {
+    userId: string;
+    bankAccountId?: string;
+    categoryId?: string;
+    transactionId?: string;
+  }) {
     await Promise.all([
-      this.bankAccountOwnershipValidate.validate(userId, bankAccountId),
-      this.categoryOwnershipValidate.validate(userId, categoryId),
+      transactionId &&
+        this.transactionOwnershipValidate.validate(userId, transactionId),
+      bankAccountId &&
+        this.bankAccountOwnershipValidate.validate(userId, bankAccountId),
+      categoryId && this.categoryOwnershipValidate.validate(userId, categoryId),
     ]);
   }
 
@@ -50,7 +49,7 @@ export class TransactionsService {
     const { bankAccountId, categoryId, name, value, date, type } =
       createTransactionInputDto;
 
-    await this.validateEntitiesOwnership(userId, bankAccountId, categoryId);
+    await this.validateEntitiesOwnership({ userId, bankAccountId, categoryId });
 
     return this.transactionsRepository.create(
       userId,
@@ -74,16 +73,22 @@ export class TransactionsService {
   ): Promise<UpdateTransactionOutputDto> {
     const { bankAccountId, categoryId, date } = updateTransactionInputDto;
 
-    await this.validateEntitiesOwnership(
+    await this.validateEntitiesOwnership({
       userId,
       bankAccountId,
       categoryId,
       transactionId,
-    );
+    });
 
     return this.transactionsRepository.update(userId, transactionId, {
       ...updateTransactionInputDto,
       date: new Date(date),
     });
+  }
+
+  async delete(userId: string, transactionId: string): Promise<void> {
+    await this.validateEntitiesOwnership({ userId, transactionId });
+
+    return this.transactionsRepository.delete(userId, transactionId);
   }
 }

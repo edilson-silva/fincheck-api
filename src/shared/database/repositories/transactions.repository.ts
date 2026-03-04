@@ -87,4 +87,13 @@ export class TransactionsRepository {
 
     return this.mapToTransactionEntity(updatedTransaction);
   }
+
+  async delete(userId: string, transactionId: string): Promise<void> {
+    await this.prismaService.transaction.delete({
+      where: {
+        userId,
+        id: transactionId,
+      },
+    });
+  }
 }
