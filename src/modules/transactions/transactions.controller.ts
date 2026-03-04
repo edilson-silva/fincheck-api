@@ -13,6 +13,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
+import { OptionalParseUUIDPipe } from 'src/shared/pipes/optional-parse-uuid-pipe.pipe';
 import {
   CreateTransactionInputDto,
   CreateTransactionOutputDto,
@@ -39,10 +40,16 @@ export class TransactionsController {
   @Get()
   async listByUserId(
     @ActiveUserId() userId: string,
-    @Query('month', ParseIntPipe) month: number,
-    @Query('year', ParseIntPipe) year: number,
+    @Query('month', ParseIntPipe) month?: number,
+    @Query('year', ParseIntPipe) year?: number,
+    @Query('bankAccountId', OptionalParseUUIDPipe) bankAccountId?: string,
   ): Promise<ListTransactionsOutputDto> {
-    return this.transactionsService.lisByUserId(userId, month, year);
+    return this.transactionsService.lisByUserId(
+      userId,
+      month,
+      year,
+      bankAccountId,
+    );
   }
 
   @Put(':transactionId')

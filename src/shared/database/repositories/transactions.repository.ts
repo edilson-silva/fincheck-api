@@ -64,6 +64,7 @@ export class TransactionsRepository {
     userId: string,
     month: number,
     year: number,
+    bankAccountId?: string,
   ): Promise<TransactionEntity[]> {
     const transactions = await this.prismaService.transaction.findMany({
       where: {
@@ -72,6 +73,7 @@ export class TransactionsRepository {
           gte: new Date(Date.UTC(year, month - 1, 1)),
           lt: new Date(Date.UTC(year, month, 1, 1)),
         },
+        bankAccountId,
       },
     });
 

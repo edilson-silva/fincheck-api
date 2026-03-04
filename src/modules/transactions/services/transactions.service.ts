@@ -66,8 +66,14 @@ export class TransactionsService {
     userId: string,
     month: number,
     year: number,
+    bankAccountId?: string,
   ): Promise<ListTransactionsOutputDto> {
-    return await this.transactionsRepository.listByUserId(userId, month, year);
+    return await this.transactionsRepository.listByUserId(
+      userId,
+      month,
+      year,
+      bankAccountId,
+    );
   }
 
   async update(
