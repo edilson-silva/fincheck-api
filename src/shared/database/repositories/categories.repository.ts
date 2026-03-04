@@ -13,4 +13,16 @@ export class CategoriesRepository {
 
     return categories;
   }
+
+  async findByUserId(
+    userId: string,
+    categoryId: string,
+  ): Promise<CategoryEntity | null> {
+    return await this.prismaService.category.findFirst({
+      where: {
+        userId,
+        id: categoryId,
+      },
+    });
+  }
 }
