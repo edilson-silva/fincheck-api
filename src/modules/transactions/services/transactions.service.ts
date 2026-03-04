@@ -62,8 +62,12 @@ export class TransactionsService {
     );
   }
 
-  async lisByUserId(userId: string): Promise<ListTransactionsOutputDto> {
-    return await this.transactionsRepository.listByUserId(userId);
+  async lisByUserId(
+    userId: string,
+    month: number,
+    year: number,
+  ): Promise<ListTransactionsOutputDto> {
+    return await this.transactionsRepository.listByUserId(userId, month, year);
   }
 
   async update(

@@ -6,9 +6,11 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ActiveUserId } from 'src/shared/decorators/active-user-id.decorator';
 import {
@@ -37,8 +39,10 @@ export class TransactionsController {
   @Get()
   async listByUserId(
     @ActiveUserId() userId: string,
+    @Query('month', ParseIntPipe) month: number,
+    @Query('year', ParseIntPipe) year: number,
   ): Promise<ListTransactionsOutputDto> {
-    return this.transactionsService.lisByUserId(userId);
+    return this.transactionsService.lisByUserId(userId, month, year);
   }
 
   @Put(':transactionId')

@@ -60,10 +60,18 @@ export class TransactionsRepository {
     return this.mapToTransactionEntity(createdTransaction);
   }
 
-  async listByUserId(userId: string): Promise<TransactionEntity[]> {
+  async listByUserId(
+    userId: string,
+    month: number,
+    year: number,
+  ): Promise<TransactionEntity[]> {
     const transactions = await this.prismaService.transaction.findMany({
       where: {
         userId,
+        date: {
+          gte: new Date(Date.UTC(year, month - 1, 1)),
+          lt: new Date(Date.UTC(year, month, 1, 1)),
+        },
       },
     });
 
