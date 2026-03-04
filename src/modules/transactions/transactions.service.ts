@@ -6,6 +6,7 @@ import {
   CreateTransactionInputDto,
   CreateTransactionOutputDto,
 } from './dto/create-transaction.dto';
+import { ListTransactionsOutputDto } from './dto/list-transaction.dto';
 
 @Injectable()
 export class TransactionsService {
@@ -34,5 +35,9 @@ export class TransactionsService {
       new Date(date),
       type,
     );
+  }
+
+  async lisByUserId(userId: string): Promise<ListTransactionsOutputDto> {
+    return await this.transactionsRepository.listByUserId(userId);
   }
 }

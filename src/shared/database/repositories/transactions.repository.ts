@@ -43,4 +43,16 @@ export class TransactionsRepository {
 
     return this.mapToTransactionEntity(createdTransaction);
   }
+
+  async listByUserId(userId: string): Promise<TransactionEntity[]> {
+    const transactions = await this.prismaService.transaction.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    return transactions.map((transactions) =>
+      this.mapToTransactionEntity(transactions),
+    );
+  }
 }
