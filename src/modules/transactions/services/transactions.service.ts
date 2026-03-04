@@ -11,6 +11,7 @@ import {
   UpdateTransactionInputDto,
   UpdateTransactionOutputDto,
 } from '../dto/update-transaction.dto';
+import { TransactionType } from '../types/transaction-type.type';
 import { TransactionOwnershipValidateService } from './transaction-ownership-validate.service';
 
 @Injectable()
@@ -67,12 +68,14 @@ export class TransactionsService {
     month: number,
     year: number,
     bankAccountId?: string,
+    transactionType?: TransactionType,
   ): Promise<ListTransactionsOutputDto> {
     return await this.transactionsRepository.listByUserId(
       userId,
       month,
       year,
       bankAccountId,
+      transactionType,
     );
   }
 
