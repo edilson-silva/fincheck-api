@@ -1,4 +1,4 @@
-import { BankAccountType } from '../types/bank-accounts-type.type';
+import { BankAccountType } from '../types/bank-account-type.type';
 
 export class BankAccountEntity {
   id: string;

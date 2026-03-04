@@ -8,7 +8,7 @@ import {
   Min,
 } from 'class-validator';
 import { BankAccountEntity } from '../entities/bank-account.entity';
-import { BankAccountType } from '../types/bank-accounts-type.type';
+import { BankAccountType } from '../types/bank-account-type.type';
 
 export class UpdateBankAccountInputDto {
   @IsString()
