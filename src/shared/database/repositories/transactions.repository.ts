@@ -20,6 +20,22 @@ export class TransactionsRepository {
     };
   }
 
+  async findById(
+    userId: string,
+    transactionId: string,
+  ): Promise<TransactionEntity | null> {
+    const transaction = await this.prismaService.transaction.findFirst({
+      where: {
+        userId,
+        id: transactionId,
+      },
+    });
+
+    if (!transaction) return null;
+
+    return this.mapToTransactionEntity(transaction);
+  }
+
   async create(
     userId: string,
     bankAccountId: string,
@@ -54,5 +70,21 @@ export class TransactionsRepository {
     return transactions.map((transactions) =>
       this.mapToTransactionEntity(transactions),
     );
+  }
+
+  async update(
+    userId: string,
+    transactionId: string,
+    data: Partial<TransactionEntity>,
+  ): Promise<TransactionEntity> {
+    const updatedTransaction = await this.prismaService.transaction.update({
+      where: {
+        userId,
+        id: transactionId,
+      },
+      data,
+    });
+
+    return this.mapToTransactionEntity(updatedTransaction);
   }
 }
