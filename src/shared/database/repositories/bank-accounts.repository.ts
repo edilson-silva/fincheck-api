@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { BankAccountBalanceEntity } from 'src/modules/bank-accounts/entities/bank-account-balance.entity';
 import { BankAccountEntity } from 'src/modules/bank-accounts/entities/bank-account.entity';
 import { BankAccountType } from 'src/modules/bank-accounts/types/bank-account-type.type';
+import { TransactionType } from 'src/modules/transactions/types/transaction-type.type';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
@@ -38,16 +40,46 @@ export class BankAccountsRepository {
     return this.mapToBankAccountEntity(newBankAccount);
   }
 
-  async listByUserId(userId: string): Promise<BankAccountEntity[]> {
+  async listByUserId(userId: string): Promise<BankAccountBalanceEntity[]> {
     const bankAccounts = await this.prismaService.bankAccount.findMany({
       where: {
         userId,
       },
+      include: {
+        transactions: {
+          select: {
+            type: true,
+            value: true,
+          },
+        },
+      },
     });
 
-    return bankAccounts.map((bankAccount) =>
-      this.mapToBankAccountEntity(bankAccount),
-    );
+    const bankAccountsWithCurrentBalance = bankAccounts.map((bankAccount) => {
+      const totalTransactions = bankAccount.transactions.reduce(
+        (acc, transaction) =>
+          acc +
+          (transaction.type === TransactionType.INCOME
+            ? transaction.value
+            : -transaction.value),
+        0,
+      );
+
+      const currentBalance = bankAccount.initialBalance + totalTransactions;
+      return {
+        ...bankAccount,
+        currentBalance,
+      };
+    });
+
+    return bankAccountsWithCurrentBalance.map((bankAccount) => {
+      delete bankAccount.transactions;
+
+      return {
+        ...bankAccount,
+        type: bankAccount.type as BankAccountType,
+      };
+    });
   }
 
   async findById(

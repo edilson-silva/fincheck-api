@@ -1,3 +1,3 @@
-import { BankAccountEntity } from '../entities/bank-account.entity';
+import { BankAccountBalanceEntity } from '../entities/bank-account-balance.entity';
 
-export type ListBankAccountsOutputDto = BankAccountEntity[];
+export type ListBankAccountsOutputDto = BankAccountBalanceEntity[];
