@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { BCryptAdapter } from 'src/shared/adapters/bcrypt.adapter';
 import { UsersRepository } from 'src/shared/database/repositories/users.repository';
@@ -23,7 +27,7 @@ export class AuthService {
     const user = await this.usersRepository.findByEmail(email);
 
     if (user) {
-      throw new UnauthorizedException('Email already in use');
+      throw new ConflictException('Email already in use');
     }
 
     const hashedPassword = await BCryptAdapter.hash(password);
