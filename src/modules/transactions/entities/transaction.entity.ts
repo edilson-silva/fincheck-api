@@ -1,3 +1,4 @@
+import { CategoryEntity } from 'src/modules/categories/entities/category.entity';
 import { TransactionType } from '../types/transaction-type.type';
 
 export class TransactionEntity {
@@ -9,4 +10,5 @@ export class TransactionEntity {
   value: number;
   date: Date;
   type: TransactionType;
+  category: Partial<CategoryEntity>;
 }

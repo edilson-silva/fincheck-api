@@ -8,7 +8,7 @@ export class TransactionsRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
   private mapToTransactionEntity(transaction: any): TransactionEntity {
-    return {
+    const newTransaction = {
       id: transaction.id,
       userId: transaction.userId,
       bankAccountId: transaction.bankAccountId,
@@ -17,7 +17,10 @@ export class TransactionsRepository {
       value: transaction.value,
       date: transaction.date,
       type: transaction.type as TransactionType,
+      category: transaction.category,
     };
+
+    return newTransaction;
   }
 
   async findById(
@@ -77,6 +80,14 @@ export class TransactionsRepository {
         bankAccountId,
         type: transactionType,
       },
+      include: {
+        category: {
+          select: {
+            name: true,
+            icon: true,
+          },
+        },
+      },
     });
 
     return transactions.map((transactions) =>
@@ -87,7 +98,7 @@ export class TransactionsRepository {
   async update(
     userId: string,
     transactionId: string,
-    data: Partial<TransactionEntity>,
+    data: Partial<Omit<TransactionEntity, 'category'>>,
   ): Promise<TransactionEntity> {
     const updatedTransaction = await this.prismaService.transaction.update({
       where: {
